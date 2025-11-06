@@ -1,151 +1,109 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>OPEN PRE-ORDER MAKARONI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg1:#e7f9fd; --bg2:#d7f3fb; --card:#fff; --accent:#0d86a9; --muted:#546e73; --price:#026c91;
-    }
-    *{box-sizing:border-box;font-family:Poppins,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;}
-    body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#04303a;padding:18px;}
-    .wrap{max-width:1000px;margin:0 auto}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-    h1{margin:0;color:var(--accent);font-size:22px}
-    .lead{color:var(--muted)}
-    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(6,29,37,0.06)}
-    .seg{display:flex;gap:8px}
-    .seg button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-    .seg .active{background:var(--accent);color:#fff}
-    .seg .inactive{background:#eef9fb;color:var(--accent)}
-    .layout{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:12px}
-    @media(max-width:980px){.layout{grid-template-columns:1fr}}
-    label{display:block;font-weight:600;margin-bottom:6px}
-    input[type="text"], input[type="number"], select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d7eef6;background:#fbfeff}
-    .variants{margin-top:8px}
-    .variant-row{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-bottom:1px dashed #eef7fa}
-    .small{font-size:13px;color:var(--muted)}
-    .qty{width:92px;padding:8px;border-radius:8px;border:1px solid #d7eef6;text-align:center}
-    .summary{padding:12px;border-radius:10px;background:linear-gradient(180deg,#f3fcff,#ffffff);border:1px solid #d8eef6}
-    .total{font-size:20px;font-weight:700;color:var(--price);margin-top:8px}
-    .btn{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700;width:100%}
-    .wa-btn{display:inline-flex;gap:8px;align-items:center;background:#25D366;color:white;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700}
-    .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
-    .map iframe{width:100%;height:220px;border-radius:8px;border:0}
-    .note{font-size:13px;color:var(--muted);margin-top:6px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OPEN PRE-ORDER MAKARONI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ... tetap gunakan CSS lama dari formmu ... */
+</style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div>
-      <h1>OPEN PRE-ORDER MAKARONI</h1>
-      <div class="small lead">All packs Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
-    </div>
-    <div style="text-align:right">
-      <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900</a>
-    </div>
-  </header>
-
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <div class="seg" role="tablist" aria-label="Tipe Pesanan">
-        <button id="tabS" class="seg-btn active" data-type="Sedesian">Sedesian</button>
-        <button id="tabR" class="seg-btn inactive" data-type="Reguler">Reguler</button>
-      </div>
-      <div style="flex:1"></div>
-      <div class="small">Contact person: El XIIB2 • 08813893900</div>
-    </div>
-
-    <div class="layout" style="margin-top:12px">
-      <!-- LEFT: FORM -->
-      <div>
-        <form id="mainForm" class="card">
-          <!-- common fields -->
-          <div id="fieldName">
-            <label>Nama Lengkap</label>
-            <input id="inputName" type="text" placeholder="Nama lengkap" required>
-            <div id="classRow" style="margin-top:10px">
-              <label>Kelas</label>
-              <input id="inputClass" type="text" placeholder="e.g. XIIB2">
-            </div>
-            <div id="addressRow" style="margin-top:10px;display:none">
-              <label>Alamat Lengkap</label>
-              <textarea id="inputAddress" rows="2" placeholder="Alamat untuk pengiriman"></textarea>
-              <div class="note">Jika pilih delivery, harap hubungi CP setelah submit untuk konfirmasi ongkir.</div>
-            </div>
-          </div>
-
-          <!-- variants -->
-          <div style="margin-top:12px">
-            <label>Daftar Varian (Rp 15.000 / pack) — isi qty 0–10</label>
-            <div class="variants" id="variantsList"></div>
-            <div class="note">Max qty per variant: 10</div>
-          </div>
-
-          <!-- pickup/delivery for Reguler -->
-          <div id="regulerOptions" style="margin-top:12px;display:none">
-            <label>Opsi Pengambilan</label>
-            <select id="pickupOption">
-              <option value="pickup">Pickup di SMA Sedes Sapientiae Semarang (12:00)</option>
-              <option value="delivery">Kirim ke alamat (harus isi alamat & hubungi CP)</option>
-            </select>
-          </div>
-
-          <!-- payment -->
-          <div style="margin-top:12px">
-            <label>Metode Pembayaran</label>
-            <div id="paymentArea" class="small"></div>
-
-            <div style="margin-top:12px">
-              <label>Upload Bukti (wajib jika pilih Transfer)</label>
-              <div class="file-input"><input id="proofFile" name="bukti" type="file" accept="image/*,application/pdf" /></div>
-            </div>
-
-            <div style="margin-top:12px">
-              <label>Catatan (opsional)</label>
-              <input id="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
-            </div>
-          </div>
-
-          <div style="margin-top:12px;display:flex;gap:8px">
-            <button type="button" id="btnSubmit" class="btn">Kirim</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- RIGHT: SUMMARY -->
-      <aside>
-        <div class="summary card">
-          <div class="small">Ringkasan Pesanan</div>
-          <div id="orderSummary" class="small" style="margin-top:8px">Belum ada item dipilih</div>
-          <div class="total" id="orderTotal">Rp 0</div>
-
-          <div style="margin-top:12px">
-            <button id="btnChat" class="btn" style="background:#25D366">Chat CP via WA</button>
-          </div>
-        </div>
-
-        <div style="margin-top:12px" class="card map">
-          <label>Lokasi Pickup</label>
-          <iframe src="https://www.google.com/maps?q=SMA+SEDES+SAPIENTIAE+SEMARANG&output=embed"></iframe>
-          <div class="note">Pickup default jam 12:00 — bisa dikonfirmasi dengan CP.</div>
-        </div>
-      </aside>
-    </div>
+<header>
+  <div>
+    <h1>OPEN PRE-ORDER MAKARONI</h1>
+    <div class="small lead">All packs Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
   </div>
+  <div style="text-align:right">
+    <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900</a>
+  </div>
+</header>
+
+<div class="card">
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <div class="seg" role="tablist" aria-label="Tipe Pesanan">
+    <button id="tabS" class="seg-btn active" data-type="Sedesian">Sedesian</button>
+    <button id="tabR" class="seg-btn inactive" data-type="Reguler">Reguler</button>
+  </div>
+  <div style="flex:1"></div>
+  <div class="small">Contact person: El XIIB2 • 08813893900</div>
+</div>
+
+<div class="layout" style="margin-top:12px">
+<div>
+  <form id="mainForm" class="card">
+    <div id="fieldName">
+      <label>Nama Lengkap</label>
+      <input id="inputName" type="text" placeholder="Nama lengkap" required>
+      <div id="classRow" style="margin-top:10px">
+        <label>Kelas</label>
+        <input id="inputClass" type="text" placeholder="e.g. XIIB2">
+      </div>
+      <div id="addressRow" style="margin-top:10px;display:none">
+        <label>Alamat Lengkap</label>
+        <textarea id="inputAddress" rows="2" placeholder="Alamat untuk pengiriman"></textarea>
+        <div class="note">Jika pilih delivery, hubungi CP untuk konfirmasi ongkir.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <label>Daftar Varian (Rp 15.000 / pack) — isi qty 0–10</label>
+      <div class="variants" id="variantsList"></div>
+      <div class="note">Max qty per variant: 10</div>
+    </div>
+
+    <div id="regulerOptions" style="margin-top:12px;display:none">
+      <label>Opsi Pengambilan</label>
+      <select id="pickupOption">
+        <option value="pickup">Pickup di SMA Sedes Sapientiae Semarang (12:00)</option>
+        <option value="delivery">Kirim ke alamat</option>
+      </select>
+    </div>
+
+    <div style="margin-top:12px">
+      <label>Metode Pembayaran</label>
+      <div id="paymentArea" class="small"></div>
+
+      <div style="margin-top:12px">
+        <label>Upload Bukti (wajib jika pilih Transfer)</label>
+        <div class="file-input"><input id="proofFile" name="bukti" type="file" accept="image/*,application/pdf" /></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <label>Catatan (opsional)</label>
+        <input id="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
+      </div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button type="button" id="btnSubmit" class="btn">Kirim</button>
+    </div>
+  </form>
+</div>
+
+<aside>
+<div class="summary card">
+  <div class="small">Ringkasan Pesanan</div>
+  <div id="orderSummary" class="small" style="margin-top:8px">Belum ada item dipilih</div>
+  <div class="total" id="orderTotal">Rp 0</div>
+
+  <div style="margin-top:12px">
+    <button id="btnChat" class="btn" style="background:#25D366">Chat CP via WA</button>
+  </div>
+</div>
+</aside>
+</div>
+</div>
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzsJofRgHH6mEUgEYp9aMSsPFElK1oaMhoMHI7FrzB9Co0qHjxXBM5jjJB56esWMJHNEg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxz8XGmPdqYolRlmHyZxredVHKB0GUrSJIYhlT9QZx2/dev";
 const CP_WA_NUMBER = "628813893900";
 const PRICE = 15000;
-const VARIANTS = [
-  "Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas","Sapi Panggang","Sapi Pedas",
-  "Jagung Bakar","Jagung Manis","Ayam Lada Hitam","Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"
-];
+const VARIANTS = ["Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas","Sapi Panggang","Sapi Pedas",
+"Jagung Bakar","Jagung Manis","Ayam Lada Hitam","Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"];
 
 const variantsList = document.getElementById('variantsList');
 VARIANTS.forEach(v => {
@@ -195,11 +153,6 @@ function renderPaymentOptions(list){
       <label style="display:flex;align-items:center;gap:6px">
         <input type="radio" name="metode" value="${m}" ${idx===0?'checked':''}> ${m}
       </label>
-      ${m==='Transfer'
-        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke: <br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>'
-        : m==='Cash'
-        ? '<div class="small" style="margin-left:22px;color:var(--muted)">💬 Jika membayar Cash, harap segera hubungi CP untuk konfirmasi pembayaran.</div>'
-        : ''}
     `;
     paymentArea.appendChild(wrap);
   });
@@ -214,56 +167,67 @@ function gatherItems(){
 function updateSummary(){
   const items=gatherItems();
   if(items.length===0){orderSummary.textContent='Belum ada item dipilih';orderTotal.textContent='Rp 0';return;}
-  const lines=items.map(it=>`${it.variant} x${it.qty}`);const total=items.reduce((s,it)=>s+it.qty*it.price,0);
-  orderSummary.textContent=lines.join(', ');orderTotal.textContent='Rp '+total.toLocaleString('id-ID');
+  const lines=items.map(it=>`${it.variant} x${it.qty}`);
+  const total=items.reduce((s,it)=>s+it.qty*it.price,0);
+  orderSummary.textContent=lines.join(', ');
+  orderTotal.textContent='Rp '+total.toLocaleString('id-ID');
 }
 
 tabS.onclick=()=>showType('Sedesian');tabR.onclick=()=>showType('Reguler');
 document.addEventListener('input',e=>{if(e.target.classList.contains('qty')){let v=Number(e.target.value)||0;if(v<0)v=0;if(v>10)v=10;e.target.value=v;updateSummary();}});
-btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya mau tanya tentang pre-order makaroni.'),'_blank');
-waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya ingin info pre-order makaroni.');
+btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER,'_blank');
+waTop.href='https://wa.me/'+CP_WA_NUMBER;
 
 btnSubmit.onclick=async()=>{
   const nama=document.getElementById('inputName').value.trim(),
-  kelas=document.getElementById('inputClass').value.trim(),
-  alamat=document.getElementById('inputAddress').value.trim(),
-  pickupOpt=document.getElementById('pickupOption')?document.getElementById('pickupOption').value:null,
-  notes=document.getElementById('notes').value.trim();
+        kelas=document.getElementById('inputClass').value.trim(),
+        alamat=document.getElementById('inputAddress').value.trim(),
+        pickupOpt=document.getElementById('pickupOption')?document.getElementById('pickupOption').value:null,
+        notes=document.getElementById('notes').value.trim();
 
   if(!nama)return alert('Silakan isi nama.');
-  if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas untuk Sedesian.');
-  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat untuk pengiriman.');
+  if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas.');
+  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat.');
 
   const items=gatherItems();if(items.length===0)return alert('Pilih minimal 1 varian.');
   const metodeRadio=document.querySelector('input[name="metode"]:checked');if(!metodeRadio)return alert('Pilih metode pembayaran.');
-  const metode=metodeRadio.value,proofFileObj=proofFile.files[0];
-  if(metode==='Transfer'&&!proofFileObj)return alert('Upload bukti transfer dulu.');
+  const metode=metodeRadio.value, proofFileObj=proofFile.files[0];
 
-  const orderLines=items.map(it=>`${it.variant} x${it.qty}`);const total=items.reduce((s,it)=>s+it.qty*it.price,0);const totalRp=total.toLocaleString('id-ID');
+  const orderLines=items.map(it=>`${it.variant} x${it.qty}`);
+  const total=items.reduce((s,it)=>s+it.qty*it.price,0);
+  const totalRp=total.toLocaleString('id-ID');
 
-const fd = new FormData();
-fd.append('nama', nama);
-fd.append('kelas_or_address', currentType==='Sedesian' ? kelas : alamat);
-fd.append('tipe', currentType);
-fd.append('pesanan', orderLines.join('; '));
-fd.append('total', total);
-fd.append('metode', metode);
-fd.append('notes', notes || '');
-if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
-
-await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
-
-
-  if(metode==='Cash'&&currentType==='Sedesian'){
-    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
-    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
-    alert('Pesanan terkirim! WA ke CP telah dibuka.');document.getElementById('mainForm').reset();updateSummary();return;
+  // FormData dikirim ke Apps Script
+  const fd = new FormData();
+  fd.append('nama', nama);
+  fd.append('kelas', currentType==='Sedesian'?kelas:"");
+  fd.append('alamat', currentType==='Reguler'&&(pickupOpt==='delivery')?alamat:"");
+  fd.append('tipe', currentType);
+  fd.append('pesanan', orderLines.join('; '));
+  fd.append('total', total);
+  fd.append('metode', metode);
+  fd.append('notes', notes || '');
+  if(proofFileObj){
+    // kasih nama file sesuai nama pelanggan
+    const ext = proofFileObj.name.split('.').pop();
+    fd.append('bukti', new File([proofFileObj], `TF_${nama}.${ext}`, {type: proofFileObj.type}));
   }
 
-  alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
+  await fetch(APPS_SCRIPT_URL,{method:'POST', body: fd});
+
+  if(metode==='Cash'){
+    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Kelas: ${kelas}%0A• Alamat: ${alamat}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}`;
+    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
+    alert('Pesanan terkirim! WA ke CP telah dibuka.');
+    document.getElementById('mainForm').reset();updateSummary();return;
+  }
+
+  alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nKelas: ${kelas}\nAlamat: ${alamat}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}`);
   document.getElementById('mainForm').reset();updateSummary();
 };
-showType('Sedesian');updateSummary();
+
+showType('Sedesian');
+updateSummary();
 </script>
 </body>
 </html>
