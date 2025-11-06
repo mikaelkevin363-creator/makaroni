@@ -161,12 +161,12 @@ VARIANTS.forEach(v => {
   variantsList.appendChild(row);
 });
 
-const tabS=document.getElementById('tabS'),tabR=document.getElementById('tabR'),
-classRow=document.getElementById('classRow'),addressRow=document.getElementById('addressRow'),
-regulerOptions=document.getElementById('regulerOptions'),paymentArea=document.getElementById('paymentArea'),
-proofFile=document.getElementById('proofFile'),btnSubmit=document.getElementById('btnSubmit'),
-orderSummary=document.getElementById('orderSummary'),orderTotal=document.getElementById('orderTotal'),
-btnChat=document.getElementById('btnChat'),waTop=document.getElementById('waTop');
+const tabS=document.getElementById('tabS'), tabR=document.getElementById('tabR'),
+      classRow=document.getElementById('classRow'), addressRow=document.getElementById('addressRow'),
+      regulerOptions=document.getElementById('regulerOptions'), paymentArea=document.getElementById('paymentArea'),
+      proofFile=document.getElementById('proofFile'), btnSubmit=document.getElementById('btnSubmit'),
+      orderSummary=document.getElementById('orderSummary'), orderTotal=document.getElementById('orderTotal'),
+      btnChat=document.getElementById('btnChat'), waTop=document.getElementById('waTop');
 
 let currentType='Sedesian';
 
@@ -223,47 +223,69 @@ document.addEventListener('input',e=>{if(e.target.classList.contains('qty')){let
 btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya mau tanya tentang pre-order makaroni.'),'_blank');
 waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya ingin info pre-order makaroni.');
 
-btnSubmit.onclick=async()=>{
-  const nama=document.getElementById('inputName').value.trim(),
-  kelas=document.getElementById('inputClass').value.trim(),
-  alamat=document.getElementById('inputAddress').value.trim(),
-  pickupOpt=document.getElementById('pickupOption')?document.getElementById('pickupOption').value:null,
-  notes=document.getElementById('notes').value.trim();
+btnSubmit.onclick = async () => {
+  const nama = document.getElementById('inputName').value.trim();
+  const kelas = document.getElementById('inputClass').value.trim();
+  const alamat = document.getElementById('inputAddress').value.trim();
+  const pickupOpt = document.getElementById('pickupOption') ? document.getElementById('pickupOption').value : null;
+  const notes = document.getElementById('notes').value.trim();
 
-  if(!nama)return alert('Silakan isi nama.');
-  if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas untuk Sedesian.');
-  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat untuk pengiriman.');
+  if(!nama) return alert('Silakan isi nama.');
+  if(currentType==='Sedesian' && !kelas) return alert('Silakan isi kelas untuk Sedesian.');
+  if(currentType==='Reguler' && pickupOpt==='delivery' && !alamat) return alert('Silakan isi alamat untuk pengiriman.');
 
-  const items=gatherItems();if(items.length===0)return alert('Pilih minimal 1 varian.');
-  const metodeRadio=document.querySelector('input[name="metode"]:checked');if(!metodeRadio)return alert('Pilih metode pembayaran.');
-  const metode=metodeRadio.value,proofFileObj=proofFile.files[0];
-  if(metode==='Transfer'&&!proofFileObj)return alert('Upload bukti transfer dulu.');
+  const items = gatherItems();
+  if(items.length===0) return alert('Pilih minimal 1 varian.');
 
-  const orderLines=items.map(it=>`${it.variant} x${it.qty}`);const total=items.reduce((s,it)=>s+it.qty*it.price,0);const totalRp=total.toLocaleString('id-ID');
+  const metodeRadio = document.querySelector('input[name="metode"]:checked');
+  if(!metodeRadio) return alert('Pilih metode pembayaran.');
+  const metode = metodeRadio.value;
+  const proofFileObj = proofFile.files[0];
 
+  if(metode==='Transfer' && !proofFileObj) return alert('Upload bukti transfer dulu.');
+
+  const orderLines = items.map(it=>`${it.variant} x${it.qty}`);
+  const total = items.reduce((s,it)=>s+it.qty*it.price,0);
+  const totalRp = total.toLocaleString('id-ID');
+
+  // kirim ke Apps Script
   const fd = new FormData();
-fd.append('nama', nama);
-fd.append('kelas_or_address', currentType==='Sedesian' ? kelas : alamat);
-fd.append('tipe', currentType);
-fd.append('pesanan', orderLines.join('; '));
-fd.append('total', total);
-fd.append('metode', metode);
-fd.append('notes', notes || '');
-if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
+  fd.append('nama', nama);
+  fd.append('kelas_or_address', currentType==='Sedesian'?kelas:alamat);
+  fd.append('tipe', currentType);
+  fd.append('pesanan', orderLines.join('; '));
+  fd.append('total', total);
+  fd.append('metode', metode);
+  fd.append('notes', notes||'');
+  if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
 
-await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
+  try{
+    await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
+  } catch(err){ console.warn('Send error', err); }
 
-  if(metode==='Cash'&&currentType==='Sedesian'){
-    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
+  if(metode==='Cash' && currentType==='Sedesian'){
+    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A`+
+                `• Nama: ${nama}%0A`+
+                `• Kelas: ${kelas}%0A`+
+                `• Tipe: ${currentType}%0A`+
+                `• Pesanan: ${orderLines.join(', ')}%0A`+
+                `• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A`+
+                `• Total Harga: Rp ${totalRp}%0A`+
+                `• Metode: Cash%0A`+
+                `• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
     window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
-    alert('Pesanan terkirim! WA ke CP telah dibuka.');document.getElementById('mainForm').reset();updateSummary();return;
+    alert('Pesanan terkirim! WA ke CP telah dibuka.');
+    document.getElementById('mainForm').reset();
+    updateSummary();
+    return;
   }
 
   alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
-  document.getElementById('mainForm').reset();updateSummary();
+  document.getElementById('mainForm').reset();
+  updateSummary();
 };
+
 showType('Sedesian');updateSummary();
 </script>
 </body>
 </html>
-
