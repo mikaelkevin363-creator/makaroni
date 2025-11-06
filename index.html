@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPEN PRE-ORDER MAKARONI</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #b3e0f2, #e6f7ff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      color: #034f84;
+    }
+    .container {
+      background: #fff;
+      margin: 30px 0;
+      padding: 25px 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 700px;
+    }
+    h1 {
+      text-align: center;
+      color: #026994;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #026994;
+      border-bottom: 2px solid #9ed6e7;
+      padding-bottom: 5px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #a7d8e8;
+      border-radius: 8px;
+    }
+    .variant-grid {
+      display: grid;
+      grid-template-columns: 1fr 80px;
+      gap: 6px;
+      align-items: center;
+    }
+    .section {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #c2e7f2;
+      border-radius: 12px;
+      background: #f7fcff;
+    }
+    button {
+      background-color: #026994;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #035f82;
+    }
+    .total {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 17px;
+    }
+    .note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>OPEN PRE-ORDER MAKARONI</h1>
+
+    <label>Pilih Jenis Pemesanan:</label>
+    <select id="tipe">
+      <option value="Sedesian">Sedesian</option>
+      <option value="Reguler">Reguler</option>
+    </select>
+
+    <div id="form-container"></div>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzsJofRgHH6mEUgEYp9aMSsPFElK1oaMhoMHI7FrzB9Co0qHjxXBM5jjJB56esWMJHNEg/exec";
+    const cpWA = "628813893900"; // nomor WA CP
+
+    const variants = [
+      "Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas",
+      "Sapi Panggang","Sapi Pedas","Jagung Bakar","Jagung Manis","Ayam Lada Hitam",
+      "Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"
+    ];
+
+    const formContainer = document.getElementById("form-container");
+    const tipeSelect = document.getElementById("tipe");
+
+    function renderForm(tipe) {
+      let formHTML = `
+      <form id="orderForm">
+        <input type="hidden" name="tipe" value="${tipe}">
+        <label>Nama:</label>
+        <input type="text" name="nama" required>
+
+        ${tipe === "Sedesian" ? `
+          <label>Kelas:</label>
+          <input type="text" name="kelasAlamat" required>
+        ` : `
+          <label>Alamat:</label>
+          <textarea name="kelasAlamat" required></textarea>
+          <p class="note">Jika dikirim ke alamat akan dikenakan ongkir. Jika diambil di SMA Sedes Sapientiae Semarang, titik maps: 
+            <a href="https://maps.app.goo.gl/ZpQQCuPg7Njr3a6s5" target="_blank">Klik di sini</a>.
+          </p>
+        `}
+
+        <div class="section">
+          <h2>Varian Makaroni</h2>
+          <div class="variant-grid">
+            ${variants.map(v => `
+              <label>${v}</label>
+              <input type="number" name="${v}" min="0" max="10" value="0">
+            `).join('')}
+          </div>
+          <div class="total">Total: Rp <span id="total">0</span></div>
+        </div>
+
+        <div class="section">
+          <h2>Metode Pembayaran</h2>
+          <select name="metode" id="metode" required>
+            ${tipe === "Sedesian" ? `
+              <option value="Cash">Cash</option>
+              <option value="Transfer">Transfer Bank</option>
+            ` : `
+              <option value="Transfer">Transfer Bank</option>
+            `}
+          </select>
+
+          <div id="pembayaran-info" class="note"></div>
+
+          <div id="upload-container" style="display:none; margin-top:10px;">
+            <label>Upload Bukti Transfer:</label>
+            <input type="file" name="bukti" accept="image/*">
+          </div>
+        </div>
+
+        <button type="submit">Kirim</button>
+      </form>
+      `;
+
+      formContainer.innerHTML = formHTML;
+
+      const inputs = document.querySelectorAll(".variant-grid input");
+      const totalDisplay = document.getElementById("total");
+      const metode = document.getElementById("metode");
+      const infoDiv = document.getElementById("pembayaran-info");
+      const uploadDiv = document.getElementById("upload-container");
+
+      inputs.forEach(i => i.addEventListener("input", updateTotal));
+      metode.addEventListener("change", updateMetode);
+
+      function updateTotal() {
+        let total = 0;
+        inputs.forEach(i => total += (parseInt(i.value) || 0) * 15000);
+        totalDisplay.textContent = total.toLocaleString();
+      }
+
+      function updateMetode() {
+        if (metode.value === "Transfer") {
+          infoDiv.innerHTML = `
+            <b>Transfer ke:</b><br>
+            4090683361 BCA<br>
+            1360036725569 MANDIRI<br>
+            <b>Mikael Kevin Kurnia</b>
+          `;
+          uploadDiv.style.display = "block";
+        } else {
+          infoDiv.innerHTML = `
+            Silakan menghubungi CP untuk pembayaran Cash.<br>
+            <b>CP:</b> El XIIB2 / 08813893900
+          `;
+          uploadDiv.style.display = "none";
+        }
+      }
+
+      const form = document.getElementById("orderForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = new FormData(form);
+        let pesanan = [], total = 0;
+        inputs.forEach(i => {
+          const val = parseInt(i.value) || 0;
+          if (val > 0) {
+            pesanan.push(`${i.name} (${val})`);
+            total += val * 15000;
+          }
+        });
+        data.append("pesanan", pesanan.join(", "));
+        data.append("total", total);
+
+        await fetch(scriptURL, { method: "POST", body: data });
+        alert("Pesanan berhasil dikirim!");
+
+        // Chat ke CP via WA
+        let msg = `Halo! Saya ${data.get("nama")} ingin pesan makaroni.\n\nTipe: ${tipe}\nPesanan: ${pesanan.join(", ")}\nTotal Qty: ${pesanan.length}\nTotal Harga: Rp${total.toLocaleString()}\n`;
+        if (tipe === "Reguler") msg += `Pengiriman: ${data.get("kelasAlamat")}`;
+        else msg += `Kelas: ${data.get("kelasAlamat")}`;
+        msg += `\n\nMetode Pembayaran: ${data.get("metode")}`;
+        window.open(`https://wa.me/${cpWA}?text=${encodeURIComponent(msg)}`);
+        form.reset();
+        totalDisplay.textContent = "0";
+      });
+    }
+
+    renderForm("Sedesian");
+    tipeSelect.addEventListener("change", () => renderForm(tipeSelect.value));
+  </script>
+</body>
+</html>
