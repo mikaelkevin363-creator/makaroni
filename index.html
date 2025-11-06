@@ -246,14 +246,16 @@ btnSubmit.onclick=async()=>{
 
   const fd = new FormData();
   fd.append('nama', nama);
-  fd.append('kelas', kelas);
-  fd.append('alamat', alamat);
+  fd.append('kelas', currentType==='Sedesian' ? kelas : "");
+  fd.append('alamat', currentType==='Reguler' ? alamat : "");
   fd.append('tipe', currentType);
   fd.append('pesanan', orderLines.join('; '));
   fd.append('total', total);
   fd.append('metode', metode);
   fd.append('notes', notes || '');
   if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
+
+  await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
 
   // Kirim ke Apps Script
   try{
@@ -277,3 +279,4 @@ showType('Sedesian');updateSummary();
 </script>
 </body>
 </html>
+
