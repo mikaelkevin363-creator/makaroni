@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OPEN PRE-ORDER MAKARONI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e7f7fb;
+    --card:#ffffff;
+    --accent:#0d86a9;
+    --accent-2:#2aa4c7;
+    --muted:#516d76;
+    --border:#d6eef6;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#dff3f8);color:#042e36}
+  .wrap{max-width:1100px;margin:28px auto;padding:20px}
+  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{margin:0;color:var(--accent);font-size:22px}
+  .lead{color:var(--muted);font-size:14px}
+  .card{background:var(--card);border-radius:12px;padding:16px;margin-top:14px;box-shadow:0 8px 24px rgba(6,29,37,0.06);}
+  .seg{display:flex;gap:8px}
+  .seg button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+  .seg .active{background:var(--accent);color:#fff}
+  .seg .inactive{background:#eef9fb;color:var(--accent)}
+  label{display:block;font-weight:600;margin-bottom:6px}
+  input[type="text"], input[type="number"], select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:#fbfeff}
+  .variants{margin-top:12px}
+  .variant-row{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px dashed #eef7fa}
+  .small{font-size:13px;color:var(--muted)}
+  .qty{width:92px;padding:8px;border-radius:8px;border:1px solid var(--border);text-align:center}
+  .side{width:340px}
+  .two-cols{display:grid;grid-template-columns:1fr 360px;gap:18px}
+  .summary{padding:12px;border-radius:10px;background:linear-gradient(180deg,#f5feff,#ffffff);border:1px solid #d8eef6}
+  .total{font-size:20px;font-weight:700;color:var(--accent);margin-top:6px}
+  .btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;width:100%}
+  .whatsapp{display:inline-flex;gap:8px;align-items:center;background:#25D366;color:white;padding:8px 10px;border-radius:10px;text-decoration:none;font-weight:700}
+  .map iframe{width:100%;height:200px;border-radius:8px;border:0}
+  .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
+  .note{font-size:13px;color:var(--muted);margin-top:6px}
+  @media(max-width:980px){
+    .two-cols{grid-template-columns:1fr}
+    .side{width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>OPEN PRE-ORDER MAKARONI</h1>
+    <div class="lead">All packs Rp 15.000 — pilih varian & masukkan jumlah (max 10)</div>
+    <div style="margin-left:auto">
+      <a class="whatsapp" id="waTop" href="#" target="_blank">Chat CP • 08813893900</a>
+    </div>
+  </header>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="seg" role="tablist" aria-label="Mode">
+        <button id="tabS" class="active" onclick="showMode('sedesian')">Sedesian</button>
+        <button id="tabR" class="inactive" onclick="showMode('reguler')">Reguler</button>
+      </div>
+      <div style="flex:1"></div>
+      <div class="small">Contact: El XIIB2 • 08813893900</div>
+    </div>
+
+    <div class="two-cols" style="margin-top:14px">
+      <div>
+        <!-- Sedesian -->
+        <div id="sedesian" class="">
+          <div class="card">
+            <label>Student Name</label>
+            <input id="s_name" type="text" placeholder="e.g. Ahmad" />
+            <div style="margin-top:10px">
+              <label>Class</label>
+              <input id="s_class" type="text" placeholder="e.g. XIIB2" />
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <label>Choose flavors (each Rp 15.000)</label>
+            <div class="variants" id="variantsSed"></div>
+            <div class="note">Max qty per variant: 10</div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <label>Payment (Transfer Bank)</label>
+            <div class="small">Please transfer to one of these accounts and upload proof.</div>
+            <div style="margin-top:8px" class="small">
+              <div><strong>BCA</strong> 4090683361</div>
+              <div><strong>MANDIRI</strong> 1360036725569</div>
+              <div><em>Mikael Kevin Kurnia</em></div>
+            </div>
+            <div style="margin-top:10px">
+              <label>Upload proof (image/pdf) <span style="color:#d9534f">*</span></label>
+              <div class="file-input"><input id="proofSed" type="file" accept="image/*,application/pdf"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reguler -->
+        <div id="reguler" class="hidden">
+          <div class="card">
+            <label>Full Name</label>
+            <input id="r_name" type="text" placeholder="e.g. Siti" />
+            <div style="margin-top:10px">
+              <label>Delivery option</label>
+              <select id="deliveryOpt">
+                <option value="pickup">Pick up at SMA Sedes Sapientiae Semarang (12:00)</option>
+                <option value="delivery">Deliver to my address (contact CP after ordering)</option>
+              </select>
+            </div>
+            <div id="addrWrap" style="margin-top:10px;display:none">
+              <label>Address</label>
+              <input id="r_address" type="text" placeholder="Full delivery address" />
+              <div class="note">If you choose delivery, please contact CP after ordering to arrange ongkir & delivery time.</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <label>Choose flavors (each Rp 15.000)</label>
+            <div class="variants" id="variantsReg"></div>
+            <div class="note">Max qty per variant: 10</div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <label>Payment (Transfer Bank)</label>
+            <div class="small">Please transfer to one of these accounts and upload proof.</div>
+            <div style="margin-top:8px" class="small">
+              <div><strong>BCA</strong> 4090683361</div>
+              <div><strong>MANDIRI</strong> 1360036725569</div>
+              <div><em>Mikael Kevin Kurnia</em></div>
+            </div>
+            <div style="margin-top:10px">
+              <label>Upload proof (image/pdf) <span style="color:#d9534f">*</span></label>
+              <div class="file-input"><input id="proofReg" type="file" accept="image/*,application/pdf"/></div>
+            </div>
+          </div>
+
+          <div class="card map" style="margin-top:12px">
+            <label>Pickup location (SMA Sedes Sapientiae Semarang)</label>
+            <iframe src="https://www.google.com/maps?q=SMA+SEDES+SAPIENTIAE+SEMARANG&output=embed"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="summary card">
+          <div class="small">Order summary</div>
+          <div id="summaryList" class="small" style="margin-top:8px">No items selected</div>
+          <div class="total" id="total">Rp 0</div>
+
+          <div style="margin-top:12px">
+            <label>Notes / Message (optional)</label>
+            <input id="notes" type="text" placeholder="e.g. pick up earlier if possible" />
+          </div>
+
+          <div style="margin-top:12px">
+            <button id="submitBtn" class="btn">Submit Order (Transfer)</button>
+          </div>
+
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <a class="whatsapp" id="waCP" href="#" target="_blank">Chat CP</a>
+          </div>
+        </div>
+        <div style="margin-top:10px" class="small">After submit: pastikan kamu mengupload bukti transfer. Jika pilih delivery, hubungi CP untuk ongkir & konfirmasi.</div>
+      </aside>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:12px" class="small">Made for pre-order • All payments via bank transfer to accounts listed above</div>
+</div>
+
+<script>
+/* Data */
+const VARIANTS = ["Original","Spicy","Super spicy","Balado","BBQ","Cheese","Spicy Cheese","Roasted Beef","Spicy Beef","Roasted Corn","Sweet Corn","Black Pepper Chicken","Chocolate","Seaweed","Spicy Seaweed","Fried Noodles"];
+const PRICE = 15000;
+
+/* Build variant lists */
+function makeList(targetId, prefix){
+  const container = document.getElementById(targetId);
+  container.innerHTML = '';
+  VARIANTS.forEach(v=>{
+    const row = document.createElement('div');
+    row.className = 'variant-row';
+    row.innerHTML = `
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="font-weight:600">${v}</div>
+        <div class="small">Rp ${PRICE.toLocaleString()}</div>
+      </div>
+      <div>
+        <input class="qty-input" data-key="${prefix}_${v}" type="number" min="0" max="10" value="0" class="qty" />
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+makeList('variantsSed','s');
+makeList('variantsReg','r');
+
+/* Mode toggle */
+function showMode(mode){
+  const sed = document.getElementById('sedesian');
+  const reg = document.getElementById('reguler');
+  const tabS = document.getElementById('tabS');
+  const tabR = document.getElementById('tabR');
+  if(mode==='sedesian'){
+    sed.style.display='block';
+    reg.style.display='none';
+    tabS.classList.add('active'); tabS.classList.remove('inactive');
+    tabR.classList.remove('active'); tabR.classList.add('inactive');
+  } else {
+    sed.style.display='none';
+    reg.style.display='block';
+    tabR.classList.add('active'); tabR.classList.remove('inactive');
+    tabS.classList.remove('active'); tabS.classList.add('inactive');
+  }
+  updateSummary();
+}
+showMode('sedesian');
+
+/* Delivery option show address */
+document.getElementById('deliveryOpt').addEventListener('change', (e)=>{
+  document.getElementById('addrWrap').style.display = (e.target.value==='delivery') ? 'block' : 'none';
+});
+
+/* WhatsApp links */
+const waMessage = encodeURIComponent('Halo CP, saya mau pesan makaroni. Mohon info lebih lanjut.'); 
+document.getElementById('waTop').href = 'https://wa.me/6288813893900?text='+waMessage;
+document.getElementById('waCP').href = 'https://wa.me/6288813893900?text='+waMessage;
+
+/* Summary & total */
+function gatherAll(){
+  const qtyInputs = document.querySelectorAll('.qty-input');
+  const items = [];
+  qtyInputs.forEach(i=>{
+    const qty = Number(i.value) || 0;
+    if(qty>0){
+      // parse variant from data-key
+      const key = i.dataset.key;
+      const name = key.split('_').slice(1).join('_').replace(/_/g,' ');
+      items.push({name, qty, price: PRICE, key});
+    }
+  });
+  return items;
+}
+function updateSummary(){
+  const items = gatherAll();
+  const sumEl = document.getElementById('summaryList');
+  const totalEl = document.getElementById('total');
+  if(items.length===0){
+    sumEl.textContent = 'No items selected';
+    totalEl.textContent = 'Rp 0';
+    return {items:[], total:0};
+  }
+  const lines = items.map(it=>`${it.name} x${it.qty}`);
+  sumEl.textContent = lines.join(', ');
+  const total = items.reduce((s,it)=>s + it.qty * it.price, 0);
+  totalEl.textContent = 'Rp ' + total.toLocaleString();
+  return {items, total};
+}
+document.addEventListener('input', (e)=>{
+  if(e.target.classList.contains('qty-input')){
+    let v = Number(e.target.value) || 0;
+    if(v < 0) v = 0;
+    if(v > 10) v = 10;
+    e.target.value = v;
+    updateSummary();
+  }
+});
+
+/* Submit handler (simulate) */
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+  const mode = document.getElementById('sedesian').style.display !== 'none' ? 'sedesian':'reguler';
+  const itemsObj = updateSummary();
+  if(itemsObj.total <= 0){
+    alert('Please choose at least one pack before submitting.');
+    return;
+  }
+  if(mode==='sedesian'){
+    const name = document.getElementById('s_name').value.trim();
+    const sclass = document.getElementById('s_class').value.trim();
+    const proof = document.getElementById('proofSed').files[0];
+    if(!name){ alert('Please fill Student Name.'); return; }
+    if(!sclass){ alert('Please fill Class.'); return; }
+    if(!proof){ alert('Please upload proof of transfer.'); return; }
+    // build summary
+    const payload = {
+      mode, name, class: sclass, items: itemsObj.items, total: itemsObj.total, notes: document.getElementById('notes').value
+    };
+    // Simulate submit
+    console.log('ORDER SUBMIT', payload);
+    alert('Order submitted! Please keep the transfer proof. CP will contact you if needed.');
+    // Optionally reset form or keep
+  } else {
+    const name = document.getElementById('r_name').value.trim();
+    const deliveryOpt = document.getElementById('deliveryOpt').value;
+    const addr = document.getElementById('r_address').value.trim();
+    const proof = document.getElementById('proofReg').files[0];
+    if(!name){ alert('Please fill Full Name.'); return; }
+    if(deliveryOpt==='delivery' && !addr){ alert('Please fill Delivery Address.'); return; }
+    if(!proof){ alert('Please upload proof of transfer.'); return; }
+    if(deliveryOpt==='delivery'){
+      alert('Note: You selected delivery. Please contact CP via WhatsApp after submitting to arrange ongkir & delivery time.');
+    }
+    const payload = {
+      mode, name, deliveryOpt, address: addr, items: itemsObj.items, total: itemsObj.total, notes: document.getElementById('notes').value
+    };
+    console.log('ORDER SUBMIT', payload);
+    alert('Order submitted! Please keep the transfer proof. CP will contact you for delivery arrangements.');
+  }
+});
+
+/* initial summary */
+updateSummary();
+</script>
+</body>
+</html>
