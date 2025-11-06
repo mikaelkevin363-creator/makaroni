@@ -241,16 +241,17 @@ btnSubmit.onclick=async()=>{
 
   const orderLines=items.map(it=>`${it.variant} x${it.qty}`);const total=items.reduce((s,it)=>s+it.qty*it.price,0);const totalRp=total.toLocaleString('id-ID');
 
-  const fd=new FormData();
-  fd.append('nama',nama);
-  fd.append('kelas_or_address',currentType==='Sedesian'?kelas:alamat);
-  fd.append('tipe',currentType);
-  fd.append('pesanan',orderLines.join('; '));
-  fd.append('total',total);
-  fd.append('metode',metode);
-  fd.append('notes',notes||'');
-  if(proofFileObj)fd.append('bukti',proofFileObj,proofFileObj.name);
-  try{await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});}catch(err){console.warn('Send error',err);}
+  const fd = new FormData();
+fd.append('nama', nama);
+fd.append('kelas_or_address', currentType==='Sedesian' ? kelas : alamat);
+fd.append('tipe', currentType);
+fd.append('pesanan', orderLines.join('; '));
+fd.append('total', total);
+fd.append('metode', metode);
+fd.append('notes', notes || '');
+if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
+
+await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
 
   if(metode==='Cash'&&currentType==='Sedesian'){
     const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
@@ -265,3 +266,4 @@ showType('Sedesian');updateSummary();
 </script>
 </body>
 </html>
+
