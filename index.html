@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>OPEN PRE-ORDER MAKARONI B2</title>
-  <link rel="icon" href="favicon-makaroni.png">  <!-- Ganti dengan URL gambar makaroni kamu -->
+  <link rel="icon" href="favicon-makaroni.png">  <!-- Tambahan: Favicon -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -36,7 +36,7 @@
     .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
     .map iframe{width:100%;height:220px;border-radius:8px;border:0}
     .note{font-size:13px;color:var(--muted);margin-top:6px}
-    .sub-option{margin-left:22px;margin-top:6px;display:none}  /* Untuk subpilihan Cash */
+    .sub-option{margin-left:22px;margin-top:6px;display:none}  /* Tambahan: Style untuk subpilihan Cash */
   </style>
 </head>
 <body>
@@ -108,6 +108,11 @@
             <div id="paymentArea" class="small"></div>
 
             <div style="margin-top:12px">
+              <label>Upload Bukti (wajib jika pilih Transfer)</label>  <!-- Tetap ada: Field upload bukti -->
+              <div class="file-input"><input id="proofFile" name="bukti" type="file" accept="image/*,application/pdf" /></div>
+            </div>
+
+            <div style="margin-top:12px">
               <label>Catatan (opsional)</label>
               <input id="notes" name="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
             </div>
@@ -169,7 +174,7 @@ VARIANTS.forEach(v => {
 const tabS=document.getElementById('tabS'),tabR=document.getElementById('tabR'),
 classRow=document.getElementById('classRow'),addressRow=document.getElementById('addressRow'),
 regulerOptions=document.getElementById('regulerOptions'),paymentArea=document.getElementById('paymentArea'),
-btnSubmit=document.getElementById('btnSubmit'),
+proofFile=document.getElementById('proofFile'),btnSubmit=document.getElementById('btnSubmit'),
 orderSummary=document.getElementById('orderSummary'),orderTotal=document.getElementById('orderTotal'),
 btnChat=document.getElementById('btnChat'),waTop=document.getElementById('waTop'),
 rekeningBox=document.getElementById('rekeningBox');
@@ -203,14 +208,14 @@ function renderPaymentOptions(list){
         <input type="radio" name="metode" value="${m}" ${idx===0?'checked':''}> ${m}
       </label>
       ${m==='Transfer'
-        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b><br><b>Mohon kirimkan bukti TF ke CP.</b></div>'
+        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b><br><b>Mohon kirimkan bukti TF ke CP.</b></div>'  // Tambahan: Catatan kirim bukti
         : m==='Cash'
-        ? '<div class="sub-option" id="cashSubOptions"><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="b2"> 💬 Sedesian (Cash lewat B2)</label><br><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="cp"> 💬 Sedesian (Cash langsung ke CP)</label></div>'
+        ? '<div class="sub-option" id="cashSubOptions"><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="b2"> 💬 Sedesian (Cash lewat B2)</label><br><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="cp"> 💬 Sedesian (Cash langsung ke CP)</label></div>'  // Tambahan: Subpilihan Cash
         : ''}`;
     paymentArea.appendChild(wrap);
   });
 
-  // Event listener untuk toggle subpilihan Cash
+  // Tambahan: Event listener untuk toggle subpilihan Cash
   const cashRadio = document.querySelector('input[name="metode"][value="Cash"]');
   const subOptions = document.getElementById('cashSubOptions');
   if(cashRadio){
@@ -275,22 +280,4 @@ btnSubmit.onclick=async()=>{
 
   if(!nama)return alert('Silakan isi nama pemesan.');
   if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas untuk Sedesian.');
-  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat untuk pengiriman.');
-
-  const items=gatherItems();
-  if(items.length===0)return alert('Pilih minimal 1 varian.');
-  const metodeRadio=document.querySelector('input[name="metode"]:checked');
-  if(!metodeRadio)return alert('Pilih metode pembayaran.');
-  const metode=metodeRadio.value;
-
-  // Untuk Cash, cek subpilihan
-  let cashType = '';
-  if(metode === 'Cash'){
-    const cashRadio = document.querySelector('input[name="cashType"]:checked');
-    if(!cashRadio)return alert('Pilih subpilihan untuk Cash.');
-    cashType = cashRadio.value;
-  }
-
-  const orderLines=items.map(it=>`${it.variant} x${it.qty}`);
-  const total=items.reduce((s,it)=>s+it.qty*it.price,0);
-  const totalRp=total.toLocaleString('
+  if
