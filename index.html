@@ -43,10 +43,10 @@
   <header>
     <div>
       <h1>OPEN PRE-ORDER MAKARONI B2</h1>
-      <div class="small lead">All packs Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
+      <div class="small lead">All packs 250 gr Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
     </div>
     <div style="text-align:right">
-      <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900</a>
+      <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900 (Setelah pencet kirim, harap selalu kirim chat otomatis ke CP.</a>
     </div>
   </header>
 
@@ -252,8 +252,8 @@ document.addEventListener('input', e=>{
   }
 });
 
-btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya mau tanya tentang pre-order makaroni.'),'_blank');
-waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya ingin info pre-order makaroni.');
+btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo kak!, saya mau tanya tentang pre-order makaroni.'),'_blank');
+waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo kak!, saya ingin info pre-order makaroni.');
 
 btnSubmit.onclick=()=>{
   const nama=document.getElementById('inputName').value.trim(),
@@ -281,7 +281,7 @@ btnSubmit.onclick=()=>{
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
   if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
-  else{ waMsg+=`%0A\nSilakan kirim bukti transfer ke CP.`;}
+  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP, Data kamu sudah tercatat ❤️. Terimakasih sudah order.`;}
 
   // buka WA langsung (iPhone friendly)
   window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
@@ -310,6 +310,7 @@ updateSummary();
 </script>
 </body>
 </html>
+
 
 
 
