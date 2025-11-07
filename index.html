@@ -4,7 +4,6 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>OPEN PRE-ORDER MAKARONI B2</title>
-  <link rel="icon" href="favicon-makaroni.png">  <!-- Tambahan: Favicon -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -36,7 +35,6 @@
     .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
     .map iframe{width:100%;height:220px;border-radius:8px;border:0}
     .note{font-size:13px;color:var(--muted);margin-top:6px}
-    .sub-option{margin-left:22px;margin-top:6px;display:none}  /* Tambahan: Style untuk subpilihan Cash */
   </style>
 </head>
 <body>
@@ -106,11 +104,6 @@
           <div style="margin-top:12px">
             <label>Metode Pembayaran</label>
             <div id="paymentArea" class="small"></div>
-
-            <div style="margin-top:12px">
-              <label>Upload Bukti (wajib jika pilih Transfer)</label>  <!-- Tetap ada: Field upload bukti -->
-              <div class="file-input"><input id="proofFile" name="bukti" type="file" accept="image/*,application/pdf" /></div>
-            </div>
 
             <div style="margin-top:12px">
               <label>Catatan (opsional)</label>
@@ -192,7 +185,7 @@ function showType(type){
     tabR.classList.add('active');tabR.classList.remove('inactive');
     tabS.classList.remove('active');tabS.classList.add('inactive');
     classRow.style.display='none';addressRow.style.display='block';regulerOptions.style.display='block';
-    renderPaymentOptions(['Transfer']);  // Reguler hanya Transfer
+    renderPaymentOptions(['Transfer']);
   }
   updateSummary();
 }
@@ -208,23 +201,14 @@ function renderPaymentOptions(list){
         <input type="radio" name="metode" value="${m}" ${idx===0?'checked':''}> ${m}
       </label>
       ${m==='Transfer'
-        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b><br><b>Mohon kirimkan bukti TF ke CP.</b></div>'  // Tambahan: Catatan kirim bukti
+        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>'
         : m==='Cash'
-        ? '<div class="sub-option" id="cashSubOptions"><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="b2"> 💬 Sedesian (Cash lewat B2)</label><br><label style="display:flex;align-items:center;gap:6px"><input type="radio" name="cashType" value="cp"> 💬 Sedesian (Cash langsung ke CP)</label></div>'  // Tambahan: Subpilihan Cash
+        ? '<div class="small" style="margin-left:22px;color:var(--muted)">💬 Untuk pemesan lewat perantara anak B2, konfirmasi melalui anak yang bersangkutan.<br>Untuk pemesan Sedesian selain anak B2, konfirmasi ke Contact Person yang tertera.</div>'
         : ''}`;
     paymentArea.appendChild(wrap);
   });
 
-  // Tambahan: Event listener untuk toggle subpilihan Cash
-  const cashRadio = document.querySelector('input[name="metode"][value="Cash"]');
-  const subOptions = document.getElementById('cashSubOptions');
-  if(cashRadio){
-    cashRadio.addEventListener('change', () => {
-      subOptions.style.display = cashRadio.checked ? 'block' : 'none';
-    });
-  }
-
-  // Rekening di ringkasan
+  // juga tampilkan rekening di ringkasan (agar jelas)
   const acct = document.createElement('div');
   acct.className = 'small';
   acct.style.marginTop = '8px';
@@ -280,4 +264,57 @@ btnSubmit.onclick=async()=>{
 
   if(!nama)return alert('Silakan isi nama pemesan.');
   if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas untuk Sedesian.');
-  if
+  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat untuk pengiriman.');
+
+  const items=gatherItems();
+  if(items.length===0)return alert('Pilih minimal 1 varian.');
+  const metodeRadio=document.querySelector('input[name="metode"]:checked');
+  if(!metodeRadio)return alert('Pilih metode pembayaran.');
+  const metode=metodeRadio.value, proofFileObj=proofFile.files[0];
+  if(metode==='Transfer'&&!proofFileObj)return alert('Upload bukti transfer dulu.');
+
+  const orderLines=items.map(it=>`${it.variant} x${it.qty}`);
+  const total=items.reduce((s,it)=>s+it.qty*it.price,0);
+  const totalRp=total.toLocaleString('id-ID');
+
+  // build FormData sesuai field yang Apps Script tunggu
+  const fd=new FormData();
+  fd.append('nama', nama);
+  fd.append('b2', b2);
+  fd.append('kelasAlamat', currentType==='Sedesian' ? kelas : alamat);
+  fd.append('tipe', currentType);
+  fd.append('pesanan', orderLines.join('; '));
+  fd.append('total', total);
+  fd.append('metode', metode);
+  fd.append('notes', notes || '');
+  if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
+
+  // kirim ke Apps Script
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
+    const text = await res.text();
+    // optional: console.log(text);
+  }catch(err){
+    console.warn('Send error', err);
+  }
+
+  // bila Cash & Sedesian => buka WA ke CP dengan format pesan
+  if(metode==='Cash'&&currentType==='Sedesian'){
+    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
+    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
+    alert('Pesanan terkirim! WA ke CP telah dibuka.');
+    document.getElementById('mainForm').reset();
+    updateSummary();
+    return;
+  }
+
+  alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nNama Perantara: ${b2 || '-'}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
+  document.getElementById('mainForm').reset();
+  updateSummary();
+};
+showType('Sedesian');updateSummary();
+</script>
+</body>
+</html>
+
+
