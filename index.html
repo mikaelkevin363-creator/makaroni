@@ -281,7 +281,7 @@ btnSubmit.onclick=()=>{
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
   if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
-  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP, Data kamu sudah tercatat ❤️. Terimakasih sudah order.`;}
+  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`;}
 
   // buka WA langsung (iPhone friendly)
   window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
@@ -310,6 +310,7 @@ updateSummary();
 </script>
 </body>
 </html>
+
 
 
 
