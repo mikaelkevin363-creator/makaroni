@@ -196,8 +196,7 @@ function showType(type){
 }
 
 function renderPaymentOptions(list){
-  paymentArea.innerHTML='';
-  rekeningBox.innerHTML='';
+  paymentArea.innerHTML='';rekeningBox.innerHTML='';
   list.forEach((m,idx)=>{
     const wrap=document.createElement('div');
     wrap.style.marginBottom='6px';
@@ -212,12 +211,10 @@ function renderPaymentOptions(list){
         : ''}`;
     paymentArea.appendChild(wrap);
   });
-
-  // juga tampilkan rekening di ringkasan (agar jelas)
-  const acct = document.createElement('div');
-  acct.className = 'small';
-  acct.style.marginTop = '8px';
-  acct.innerHTML = '<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
+  const acct=document.createElement('div');
+  acct.className='small';
+  acct.style.marginTop='8px';
+  acct.innerHTML='<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
   rekeningBox.appendChild(acct);
 }
 
@@ -251,8 +248,7 @@ document.addEventListener('input',e=>{
   if(e.target.classList.contains('qty')){
     let v=Number(e.target.value)||0;
     if(v<0)v=0;if(v>10)v=10;
-    e.target.value=v;
-    updateSummary();
+    e.target.value=v;updateSummary();
   }
 });
 
@@ -282,7 +278,6 @@ btnSubmit.onclick=async()=>{
   const total=items.reduce((s,it)=>s+it.qty*it.price,0);
   const totalRp=total.toLocaleString('id-ID');
 
-  // build FormData sesuai field yang Apps Script tunggu
   const fd=new FormData();
   fd.append('nama', nama);
   fd.append('b2', b2);
@@ -294,31 +289,27 @@ btnSubmit.onclick=async()=>{
   fd.append('notes', notes || '');
   if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
 
-  // kirim ke Apps Script
   try{
-    const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
-    const text = await res.text();
-    // optional: console.log(text);
-  }catch(err){
-    console.warn('Send error', err);
-  }
+    await fetch(APPS_SCRIPT_URL,{method:'POST',body:fd});
+  }catch(err){console.warn('Send error',err);}
 
-  // bila Cash & Sedesian => buka WA ke CP dengan format pesan
-  if(metode==='Cash'&&currentType==='Sedesian'){
-    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
-    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
+  const pesanWA = `Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• ${currentType==='Sedesian' ? 'Kelas' : 'Alamat'}: ${currentType==='Sedesian'?kelas:alamat||'-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
+
+  // WA otomatis terbuka untuk Cash (Sedesian) DAN semua Reguler
+  if((metode==='Cash'&&currentType==='Sedesian') || currentType==='Reguler'){
+    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesanWA,'_blank');
     alert('Pesanan terkirim! WA ke CP telah dibuka.');
-    document.getElementById('mainForm').reset();
-    updateSummary();
-    return;
+  }else{
+    alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nNama Perantara: ${b2 || '-'}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
   }
 
-  alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nNama Perantara: ${b2 || '-'}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
   document.getElementById('mainForm').reset();
   updateSummary();
 };
-showType('Sedesian');updateSummary();
+
+showType('Sedesian');
+updateSummary();
 </script>
-</body>
-</html>
+
+
 
