@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>OPEN PRE-ORDER MAKARONI B2</title>
+  <link rel="icon" href="favicon-makaroni.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -106,6 +107,11 @@
             <div id="paymentArea" class="small"></div>
 
             <div style="margin-top:12px">
+              <label>Bukti Transfer (hanya untuk Transfer)</label>
+              <input type="file" id="proofFile" name="bukti" class="file-input" accept="image/*" />
+            </div>
+
+            <div style="margin-top:12px">
               <label>Catatan (opsional)</label>
               <input id="notes" name="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
             </div>
@@ -142,7 +148,7 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZSIBLhD7Eyrm0L5ZosonmlW-d-j5MtxskqjOp7F7UU0u9dDrCfpReEReB1z_OHsKClA/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxz8t1-O64_YL1mv4M-c9iwhFdrzaSw4WI14PLp9MAIt3XADLOj9b49TUXlRV6yYhD9A/exec";
 const CP_WA_NUMBER = "628813893900";
 const PRICE = 15000;
 const VARIANTS = [
@@ -208,7 +214,6 @@ function renderPaymentOptions(list){
     paymentArea.appendChild(wrap);
   });
 
-  // juga tampilkan rekening di ringkasan (agar jelas)
   const acct = document.createElement('div');
   acct.className = 'small';
   acct.style.marginTop = '8px';
@@ -277,7 +282,7 @@ btnSubmit.onclick=async()=>{
   const total=items.reduce((s,it)=>s+it.qty*it.price,0);
   const totalRp=total.toLocaleString('id-ID');
 
-  // build FormData sesuai field yang Apps Script tunggu
+  // build FormData
   const fd=new FormData();
   fd.append('nama', nama);
   fd.append('b2', b2);
@@ -287,28 +292,24 @@ btnSubmit.onclick=async()=>{
   fd.append('total', total);
   fd.append('metode', metode);
   fd.append('notes', notes || '');
+  if(pickupOpt) fd.append('pickupOption', pickupOpt);
   if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
 
   // kirim ke Apps Script
   try{
     const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
     const text = await res.text();
-    // optional: console.log(text);
   }catch(err){
     console.warn('Send error', err);
   }
 
-  // bila Cash & Sedesian => buka WA ke CP dengan format pesan
-  if(metode==='Cash'&&currentType==='Sedesian'){
-    const pesan=`Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Kelas: ${kelas}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: Cash%0A• Catatan: ${notes||'-'}%0A%0A📍Diambil di SMA Sedes Sapientiae Semarang`;
-    window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
-    alert('Pesanan terkirim! WA ke CP telah dibuka.');
-    document.getElementById('mainForm').reset();
-    updateSummary();
-    return;
-  }
+  // WA otomatis dengan tag [PESAN SEDESIAN] atau [PESAN REGULER]
+  const tag = currentType==='Sedesian' ? '[PESAN SEDESIAN]' : '[PESAN REGULER]';
+  const pesan=`${tag} Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Kelas/Alamat: ${currentType==='Sedesian'?kelas:alamat}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}%0A%0A📍${currentType==='Sedesian'?'Diambil di SMA Sedes Sapientiae Semarang':'Diantar sesuai alamat'}`;
 
-  alert(`✅ Pesanan terkirim!\n\nNama: ${nama}\nNama Perantara: ${b2 || '-'}\nTipe: ${currentType}\nPesanan: ${orderLines.join(', ')}\nTotal: Rp ${totalRp}\nMetode: ${metode}\n\nSilakan lanjut transfer dan tunggu konfirmasi CP.`);
+  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
+
+  alert('Pesanan terkirim! WA ke CP telah dibuka.');
   document.getElementById('mainForm').reset();
   updateSummary();
 };
@@ -316,5 +317,3 @@ showType('Sedesian');updateSummary();
 </script>
 </body>
 </html>
-
-
