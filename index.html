@@ -4,8 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>OPEN PRE-ORDER MAKARONI B2</title>
-  <link rel="icon" href="favicon-makaroni.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon-makaroni.png" type="image/png"> <!-- favicon -->
   <style>
     :root{
       --bg1:#e7f9fd; --bg2:#d7f3fb; --card:#fff; --accent:#0d86a9; --muted:#546e73; --price:#026c91;
@@ -63,11 +63,10 @@
     <div class="layout" style="margin-top:12px">
       <!-- LEFT: FORM -->
       <div>
-        <form id="mainForm" class="card" enctype="multipart/form-data">
-          <!-- common fields -->
+        <form id="mainForm" class="card">
           <div id="fieldName">
             <label>Nama Pemesan</label>
-            <input id="inputName" name="nama" type="text" placeholder="Nama lengkap" required>
+            <input id="inputName" name="nama" type="text" placeholder="Nama Pemesan" required>
 
             <div id="fieldB2" style="margin-top:10px">
               <label>Nama Perantara Order (B2)</label>
@@ -85,14 +84,12 @@
             </div>
           </div>
 
-          <!-- variants -->
           <div style="margin-top:12px">
             <label>Daftar Varian (Rp 15.000 / pack) — isi qty 0–10</label>
             <div class="variants" id="variantsList"></div>
             <div class="note">Max qty per variant: 10</div>
           </div>
 
-          <!-- pickup/delivery for Reguler -->
           <div id="regulerOptions" style="margin-top:12px;display:none">
             <label>Opsi Pengambilan</label>
             <select id="pickupOption" name="pickupOption">
@@ -101,14 +98,15 @@
             </select>
           </div>
 
-          <!-- payment -->
           <div style="margin-top:12px">
             <label>Metode Pembayaran</label>
             <div id="paymentArea" class="small"></div>
-
-            <div style="margin-top:12px">
-              <label>Bukti Transfer (hanya untuk Transfer)</label>
-              <input type="file" id="proofFile" name="bukti" class="file-input" accept="image/*" />
+            <div id="cashOptions" style="margin-top:6px;display:none">
+              <label>Pilih opsi Cash</label>
+              <select id="cashPickup">
+                <option value="pickup">Pickup di Sedes</option>
+                <option value="delivery">Delivery ke alamat</option>
+              </select>
             </div>
 
             <div style="margin-top:12px">
@@ -123,7 +121,6 @@
         </form>
       </div>
 
-      <!-- RIGHT: SUMMARY -->
       <aside>
         <div class="summary card">
           <div class="small">Ringkasan Pesanan</div>
@@ -148,19 +145,16 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9qOxwJbua89uBV0FNQouPATbxUzvPrPIqOGU5chJI4KA_xgOmic276TNKF2JLuThufQ/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPY4p8_BRc0_dnXOBFH9dVx8dQgj2BFEUPkQzf8Ww1R1MY--zpaA5t255Y9ErANyh5Lg/exec";
 const CP_WA_NUMBER = "628813893900";
 const PRICE = 15000;
-const VARIANTS = [
-  "Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas","Sapi Panggang","Sapi Pedas",
-  "Jagung Bakar","Jagung Manis","Ayam Lada Hitam","Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"
-];
+const VARIANTS = ["Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas","Sapi Panggang","Sapi Pedas","Jagung Bakar","Jagung Manis","Ayam Lada Hitam","Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"];
 
-const variantsList = document.getElementById('variantsList');
-VARIANTS.forEach(v => {
-  const row = document.createElement('div');
-  row.className = 'variant-row';
-  row.innerHTML = `
+const variantsList=document.getElementById('variantsList');
+VARIANTS.forEach(v=>{
+  const row=document.createElement('div');
+  row.className='variant-row';
+  row.innerHTML=`
     <div style="display:flex;gap:12px;align-items:center">
       <div style="font-weight:600">${v}</div>
       <div class="small" style="margin-left:6px;color:var(--price)">Rp ${PRICE.toLocaleString()}</div>
@@ -173,10 +167,10 @@ VARIANTS.forEach(v => {
 const tabS=document.getElementById('tabS'),tabR=document.getElementById('tabR'),
 classRow=document.getElementById('classRow'),addressRow=document.getElementById('addressRow'),
 regulerOptions=document.getElementById('regulerOptions'),paymentArea=document.getElementById('paymentArea'),
-proofFile=document.getElementById('proofFile'),btnSubmit=document.getElementById('btnSubmit'),
-orderSummary=document.getElementById('orderSummary'),orderTotal=document.getElementById('orderTotal'),
-btnChat=document.getElementById('btnChat'),waTop=document.getElementById('waTop'),
-rekeningBox=document.getElementById('rekeningBox');
+btnSubmit=document.getElementById('btnSubmit'),orderSummary=document.getElementById('orderSummary'),
+orderTotal=document.getElementById('orderTotal'),btnChat=document.getElementById('btnChat'),
+waTop=document.getElementById('waTop'),rekeningBox=document.getElementById('rekeningBox'),
+cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElementById('cashPickup');
 
 let currentType='Sedesian';
 
@@ -191,14 +185,13 @@ function showType(type){
     tabR.classList.add('active');tabR.classList.remove('inactive');
     tabS.classList.remove('active');tabS.classList.add('inactive');
     classRow.style.display='none';addressRow.style.display='block';regulerOptions.style.display='block';
-    renderPaymentOptions(['Transfer']);
+    renderPaymentOptions(['Transfer','Cash']);
   }
   updateSummary();
 }
 
 function renderPaymentOptions(list){
-  paymentArea.innerHTML='';
-  rekeningBox.innerHTML='';
+  paymentArea.innerHTML='';rekeningBox.innerHTML='';cashOptions.style.display='none';
   list.forEach((m,idx)=>{
     const wrap=document.createElement('div');
     wrap.style.marginBottom='6px';
@@ -206,20 +199,25 @@ function renderPaymentOptions(list){
       <label style="display:flex;align-items:center;gap:6px">
         <input type="radio" name="metode" value="${m}" ${idx===0?'checked':''}> ${m}
       </label>
-      ${m==='Transfer'
-        ? '<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>'
-        : m==='Cash'
-        ? '<div class="small" style="margin-left:22px;color:var(--muted)">💬 Untuk pemesan lewat perantara anak B2, konfirmasi melalui anak yang bersangkutan.<br>Untuk pemesan Sedesian selain anak B2, konfirmasi ke Contact Person yang tertera.</div>'
-        : ''}`;
+      ${m==='Transfer'?'<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>':''
+      }`;
     paymentArea.appendChild(wrap);
   });
 
-  const acct = document.createElement('div');
-  acct.className = 'small';
-  acct.style.marginTop = '8px';
-  acct.innerHTML = '<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
+  const acct=document.createElement('div');
+  acct.className='small';acct.style.marginTop='8px';
+  acct.innerHTML='<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
   rekeningBox.appendChild(acct);
 }
+
+// tampilkan opsi Cash
+document.addEventListener('change', e=>{
+  if(e.target.name==='metode'){
+    if(e.target.value==='Cash'){
+      cashOptions.style.display='block';
+    }else{ cashOptions.style.display='none'; }
+  }
+});
 
 function gatherItems(){
   const inputs=document.querySelectorAll('.qty');
@@ -247,11 +245,9 @@ function updateSummary(){
 tabS.onclick=()=>showType('Sedesian');
 tabR.onclick=()=>showType('Reguler');
 
-document.addEventListener('input',e=>{
+document.addEventListener('input', e=>{
   if(e.target.classList.contains('qty')){
-    let v=Number(e.target.value)||0;
-    if(v<0)v=0;if(v>10)v=10;
-    e.target.value=v;
+    let v=Number(e.target.value)||0;if(v<0)v=0;if(v>10)v=10;e.target.value=v;
     updateSummary();
   }
 });
@@ -259,7 +255,7 @@ document.addEventListener('input',e=>{
 btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya mau tanya tentang pre-order makaroni.'),'_blank');
 waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo CP, saya ingin info pre-order makaroni.');
 
-btnSubmit.onclick=async()=>{
+btnSubmit.onclick=()=>{
   const nama=document.getElementById('inputName').value.trim(),
         b2=document.getElementById('inputB2').value.trim(),
         kelas=document.getElementById('inputClass').value.trim(),
@@ -267,55 +263,50 @@ btnSubmit.onclick=async()=>{
         pickupOpt=document.getElementById('pickupOption')?document.getElementById('pickupOption').value:null,
         notes=document.getElementById('notes').value.trim();
 
-  if(!nama)return alert('Silakan isi nama pemesan.');
-  if(currentType==='Sedesian'&&!kelas)return alert('Silakan isi kelas untuk Sedesian.');
-  if(currentType==='Reguler'&&pickupOpt==='delivery'&&!alamat)return alert('Silakan isi alamat untuk pengiriman.');
+  if(!nama){ alert('Silakan isi nama pemesan.'); return; }
+  if(currentType==='Sedesian' && !kelas){ alert('Silakan isi kelas.'); return; }
+  if(currentType==='Reguler' && pickupOpt==='delivery' && !alamat){ alert('Silakan isi alamat.'); return; }
 
   const items=gatherItems();
-  if(items.length===0)return alert('Pilih minimal 1 varian.');
+  if(items.length===0){ alert('Pilih minimal 1 varian.'); return; }
+
   const metodeRadio=document.querySelector('input[name="metode"]:checked');
-  if(!metodeRadio)return alert('Pilih metode pembayaran.');
-  const metode=metodeRadio.value, proofFileObj=proofFile.files[0];
-  if(metode==='Transfer'&&!proofFileObj)return alert('Upload bukti transfer dulu.');
+  if(!metodeRadio){ alert('Pilih metode pembayaran.'); return; }
+  const metode=metodeRadio.value;
+  let cashChoice=''; if(metode==='Cash'){ cashChoice=cashPickup.value; }
 
   const orderLines=items.map(it=>`${it.variant} x${it.qty}`);
   const total=items.reduce((s,it)=>s+it.qty*it.price,0);
   const totalRp=total.toLocaleString('id-ID');
 
-  // build FormData
+  let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Pickup di Sedes':'Delivery ke alamat'}`;}
+  else{ waMsg+=`%0A\nSilakan kirim bukti transfer ke CP.`;}
+
+  // buka WA langsung (iPhone friendly)
+  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
+
+  // kirim ke Apps Script background
   const fd=new FormData();
   fd.append('nama', nama);
   fd.append('b2', b2);
-  fd.append('kelasAlamat', currentType==='Sedesian' ? kelas : alamat);
+  fd.append('kelasAlamat', currentType==='Sedesian'?kelas:alamat);
   fd.append('tipe', currentType);
   fd.append('pesanan', orderLines.join('; '));
   fd.append('total', total);
   fd.append('metode', metode);
   fd.append('notes', notes || '');
-  if(pickupOpt) fd.append('pickupOption', pickupOpt);
-  if(proofFileObj) fd.append('bukti', proofFileObj, proofFileObj.name);
+  if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
 
-  // kirim ke Apps Script
-  try{
-    const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body: fd });
-    const text = await res.text();
-  }catch(err){
-    console.warn('Send error', err);
-  }
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:fd}).then(res=>res.text()).then(t=>console.log('Data terkirim',t)).catch(err=>console.warn(err));
 
-  // WA otomatis dengan tag [PESAN SEDESIAN] atau [PESAN REGULER]
-  const tag = currentType==='Sedesian' ? '[PESAN SEDESIAN]' : '[PESAN REGULER]';
-  const pesan=`${tag} Halo Kak, saya ingin pesan Makaroni:%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Kelas/Alamat: ${currentType==='Sedesian'?kelas:alamat}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}%0A%0A📍${currentType==='Sedesian'?'Diambil di SMA Sedes Sapientiae Semarang':'Diantar sesuai alamat'}`;
-
-  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+pesan,'_blank');
-
-  alert('Pesanan terkirim! WA ke CP telah dibuka.');
   document.getElementById('mainForm').reset();
+  cashOptions.style.display='none';
   updateSummary();
 };
-showType('Sedesian');updateSummary();
+
+showType('Sedesian');
+updateSummary();
 </script>
 </body>
 </html>
-
-
