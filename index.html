@@ -104,8 +104,7 @@
             <div id="cashOptions" style="margin-top:6px;display:none">
               <label>Pilih opsi Cash</label>
               <select id="cashPickup">
-                <option value="pickup">Pickup di Sedes</option>
-                <option value="delivery">Delivery ke alamat</option>
+                <option value="delivery">Membayar dengan Anak Sedes Langsung Menghubungi CP</option>
               </select>
             </div>
 
@@ -280,7 +279,7 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
-  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Pickup di Sedes':'Delivery ke alamat'}`;}
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
   else{ waMsg+=`%0A\nSilakan kirim bukti transfer ke CP.`;}
 
   // buka WA langsung (iPhone friendly)
@@ -310,3 +309,4 @@ updateSummary();
 </script>
 </body>
 </html>
+
