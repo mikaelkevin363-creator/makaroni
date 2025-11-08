@@ -36,6 +36,30 @@
     .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
     .map iframe{width:100%;height:220px;border-radius:8px;border:0}
     .note{font-size:13px;color:var(--muted);margin-top:6px}
+
+    /* Tambahan Toast */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px;
+      position: fixed;
+      z-index: 1000;
+      left: 50%;
+      bottom: 30px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.5s, bottom 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +168,9 @@
   </div>
 </div>
 
+<!-- Toast Notifikasi -->
+<div id="toast"></div>
+
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPY4p8_BRc0_dnXOBFH9dVx8dQgj2BFEUPkQzf8Ww1R1MY--zpaA5t255Y9ErANyh5Lg/exec";
 const CP_WA_NUMBER = "628813893900";
@@ -170,7 +197,8 @@ regulerOptions=document.getElementById('regulerOptions'),paymentArea=document.ge
 btnSubmit=document.getElementById('btnSubmit'),orderSummary=document.getElementById('orderSummary'),
 orderTotal=document.getElementById('orderTotal'),btnChat=document.getElementById('btnChat'),
 waTop=document.getElementById('waTop'),rekeningBox=document.getElementById('rekeningBox'),
-cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElementById('cashPickup');
+cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElementById('cashPickup'),
+toast=document.getElementById('toast');
 
 let currentType='Sedesian';
 
@@ -199,8 +227,7 @@ function renderPaymentOptions(list){
       <label style="display:flex;align-items:center;gap:6px">
         <input type="radio" name="metode" value="${m}" ${idx===0?'checked':''}> ${m}
       </label>
-      ${m==='Transfer'?'<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>':''
-      }`;
+      ${m==='Transfer'?'<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>':''}`;
     paymentArea.appendChild(wrap);
   });
 
@@ -210,7 +237,6 @@ function renderPaymentOptions(list){
   rekeningBox.appendChild(acct);
 }
 
-// tampilkan opsi Cash
 document.addEventListener('change', e=>{
   if(e.target.name==='metode'){
     if(e.target.value==='Cash'){
@@ -240,6 +266,13 @@ function updateSummary(){
   const total=items.reduce((s,it)=>s+it.qty*it.price,0);
   orderSummary.textContent=lines.join(', ');
   orderTotal.textContent='Rp '+total.toLocaleString('id-ID');
+}
+
+function showToast(message,color='#333'){
+  toast.textContent=message;
+  toast.style.background=color;
+  toast.className='show';
+  setTimeout(()=>{ toast.className=toast.className.replace('show',''); },4000);
 }
 
 tabS.onclick=()=>showType('Sedesian');
@@ -280,40 +313,4 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
-  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
-  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`;}
-
-  // buka WA langsung (iPhone friendly)
-  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
-
-  // kirim ke Apps Script background
-  const fd=new FormData();
-  fd.append('nama', nama);
-  fd.append('b2', b2);
-  fd.append('kelasAlamat', currentType==='Sedesian'?kelas:alamat);
-  fd.append('tipe', currentType);
-  fd.append('pesanan', orderLines.join('; '));
-  fd.append('total', total);
-  fd.append('metode', metode);
-  fd.append('notes', notes || '');
-  if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
-
-  fetch(APPS_SCRIPT_URL,{method:'POST',body:fd}).then(res=>res.text()).then(t=>console.log('Data terkirim',t)).catch(err=>console.warn(err));
-
-  document.getElementById('mainForm').reset();
-  cashOptions.style.display='none';
-  updateSummary();
-};
-
-showType('Sedesian');
-updateSummary();
-</script>
-</body>
-</html>
-
-
-
-
-
-
-
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cash
