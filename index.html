@@ -1,3 +1,4 @@
+<!-- Simpan ini sebagai HTML lengkap -->
 <!doctype html>
 <html lang="id">
 <head>
@@ -105,7 +106,7 @@ input[type="text"], input[type="number"], select, textarea{width:100%;padding:10
           <label>Pilih opsi Cash</label>
           <select id="cashPickup">
             <option value="pickup">Langsung Menghubungi Melalui Perantara dari Anak XIIB2</option>
-            <option value="delivery">Membayar Langsung dengan Contact Person</option>
+            <option value="delivery">Membayar dengan Anak Sedes Langsung Menghubungi CP</option>
           </select>
         </div>
 
@@ -145,7 +146,7 @@ input[type="text"], input[type="number"], select, textarea{width:100%;padding:10
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9Y0d07lvlsdMC0GAFXEdmx7L4pqkvedpzhooJOzOpSxj8vdG8xlTv4aBNLWTa20G2cg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsbA5ppiraoLx4Ygkl0IX6DKxImfBrRVXZSFbcFDkjJbUeyQ8vmBBlih4LOOfGQV1s8w/exec";
 const CP_WA_NUMBER = "628813893900";
 const PRICE = 15000;
 const VARIANTS = ["Original","Spicy","Super Spicy","Balado","BBQ","Keju","Keju Pedas","Sapi Panggang","Sapi Pedas","Jagung Bakar","Jagung Manis","Ayam Lada Hitam","Cokelat","Rumput Laut","Rumput Laut Pedas","Mie Goreng"];
@@ -174,7 +175,6 @@ cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElemen
 
 let currentType='Sedesian';
 
-// --- TOAST NOTIFIKASI ---
 function showToast(msg, type='success', dur=3000){
   const t=document.createElement('div');
   t.textContent=msg;
@@ -303,12 +303,18 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
+
+  // ===== Tambahkan opsi pengambilan untuk Reguler =====
+  if(currentType==='Reguler' && pickupOpt){
+    waMsg += `%0A• Opsi Pengambilan: ${pickupOpt==='pickup' ? 'Di Sedes' : 'Delivery ke alamat'}`;
+  }
+  // =====================================================
+
   if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
   else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`; }
 
   window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
 
-  // kirim ke Apps Script background
   const fd=new FormData();
   fd.append('nama', nama);
   fd.append('b2', b2);
@@ -319,18 +325,16 @@ btnSubmit.onclick=()=>{
   fd.append('metode', metode);
   fd.append('notes', notes || '');
   if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
-  if(currentType==='Reguler'){ fd.append('pickupOption', pickupOpt); }
 
   fetch(APPS_SCRIPT_URL,{method:'POST',body:fd})
     .then(res=>{ showToast('Pesanan berhasil dikirim!','success'); return res.text(); })
     .then(t=>console.log('Data terkirim',t))
     .catch(err=>{ console.warn(err); showToast('Gagal mengirim pesanan','error'); });
 
-  // --- RESET FORM 2 DETIK ---
   setTimeout(()=>{
     document.getElementById('mainForm').reset();
     cashOptions.style.display='none';
-    showType(currentType); // refresh tipe pesanan & payment
+    showType(currentType);
     updateSummary();
   }, 2000);
 };
