@@ -36,30 +36,6 @@
     .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
     .map iframe{width:100%;height:220px;border-radius:8px;border:0}
     .note{font-size:13px;color:var(--muted);margin-top:6px}
-
-    /* Tambahan Toast */
-    #toast {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 8px;
-      padding: 12px;
-      position: fixed;
-      z-index: 1000;
-      left: 50%;
-      bottom: 30px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.5s, bottom 0.5s;
-    }
-    #toast.show {
-      visibility: visible;
-      opacity: 1;
-      bottom: 50px;
-    }
   </style>
 </head>
 <body>
@@ -168,9 +144,6 @@
   </div>
 </div>
 
-<!-- Toast Notifikasi -->
-<div id="toast"></div>
-
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPY4p8_BRc0_dnXOBFH9dVx8dQgj2BFEUPkQzf8Ww1R1MY--zpaA5t255Y9ErANyh5Lg/exec";
 const CP_WA_NUMBER = "628813893900";
@@ -197,10 +170,34 @@ regulerOptions=document.getElementById('regulerOptions'),paymentArea=document.ge
 btnSubmit=document.getElementById('btnSubmit'),orderSummary=document.getElementById('orderSummary'),
 orderTotal=document.getElementById('orderTotal'),btnChat=document.getElementById('btnChat'),
 waTop=document.getElementById('waTop'),rekeningBox=document.getElementById('rekeningBox'),
-cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElementById('cashPickup'),
-toast=document.getElementById('toast');
+cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElementById('cashPickup');
 
 let currentType='Sedesian';
+
+// --- TOAST NOTIFIKASI ---
+function showToast(msg, type='success', dur=3000){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.position='fixed';
+  t.style.bottom='24px';
+  t.style.right='24px';
+  t.style.padding='12px 16px';
+  t.style.borderRadius='10px';
+  t.style.color='#fff';
+  t.style.fontWeight='600';
+  t.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';
+  t.style.opacity='0';
+  t.style.pointerEvents='none';
+  t.style.transition='all 0.3s ease';
+  t.style.zIndex='9999';
+  t.style.background = type==='success' ? '#4caf50' : '#f44336';
+  document.body.appendChild(t);
+  setTimeout(()=>t.style.opacity='1',50);
+  setTimeout(()=>{
+    t.style.opacity='0';
+    setTimeout(()=>t.remove(),300);
+  },dur);
+}
 
 function showType(type){
   currentType=type;
@@ -237,6 +234,7 @@ function renderPaymentOptions(list){
   rekeningBox.appendChild(acct);
 }
 
+// tampilkan opsi Cash
 document.addEventListener('change', e=>{
   if(e.target.name==='metode'){
     if(e.target.value==='Cash'){
@@ -268,13 +266,6 @@ function updateSummary(){
   orderTotal.textContent='Rp '+total.toLocaleString('id-ID');
 }
 
-function showToast(message,color='#333'){
-  toast.textContent=message;
-  toast.style.background=color;
-  toast.className='show';
-  setTimeout(()=>{ toast.className=toast.className.replace('show',''); },4000);
-}
-
 tabS.onclick=()=>showType('Sedesian');
 tabR.onclick=()=>showType('Reguler');
 
@@ -296,16 +287,16 @@ btnSubmit.onclick=()=>{
         pickupOpt=document.getElementById('pickupOption')?document.getElementById('pickupOption').value:null,
         notes=document.getElementById('notes').value.trim();
 
-  if(!nama){ alert('Silakan isi nama pemesan.'); return; }
-  if(currentType==='Sedesian' && !kelas){ alert('Silakan isi kelas.'); return; }
-  if(currentType==='Reguler' && pickupOpt==='delivery' && !alamat){ alert('Silakan isi alamat.'); return; }
-
   const items=gatherItems();
-  if(items.length===0){ alert('Pilih minimal 1 varian.'); return; }
-
   const metodeRadio=document.querySelector('input[name="metode"]:checked');
-  if(!metodeRadio){ alert('Pilih metode pembayaran.'); return; }
-  const metode=metodeRadio.value;
+  const metode=metodeRadio? metodeRadio.value : '';
+
+  if(!nama){ showToast('Silakan isi nama pemesan','error'); return; }
+  if(currentType==='Sedesian' && !kelas){ showToast('Silakan isi kelas','error'); return; }
+  if(currentType==='Reguler' && pickupOpt==='delivery' && !alamat){ showToast('Silakan isi alamat','error'); return; }
+  if(items.length===0){ showToast('Pilih minimal 1 varian','error'); return; }
+  if(!metode){ showToast('Pilih metode pembayaran','error'); return; }
+
   let cashChoice=''; if(metode==='Cash'){ cashChoice=cashPickup.value; }
 
   const orderLines=items.map(it=>`${it.variant} x${it.qty}`);
@@ -313,4 +304,41 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
-  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cash
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
+  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`; }
+
+  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
+
+  // kirim ke Apps Script background
+  const fd=new FormData();
+  fd.append('nama', nama);
+  fd.append('b2', b2);
+  fd.append('kelasAlamat', currentType==='Sedesian'?kelas:alamat);
+  fd.append('tipe', currentType);
+  fd.append('pesanan', orderLines.join('; '));
+  fd.append('total', total);
+  fd.append('metode', metode);
+  fd.append('notes', notes || '');
+  if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
+
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:fd})
+    .then(res=>{
+      showToast('Pesanan berhasil dikirim!','success');
+      return res.text();
+    })
+    .then(t=>console.log('Data terkirim',t))
+    .catch(err=>{
+      console.warn(err);
+      showToast('Gagal mengirim pesanan','error');
+    });
+
+  document.getElementById('mainForm').reset();
+  cashOptions.style.display='none';
+  updateSummary();
+};
+
+showType('Sedesian');
+updateSummary();
+</script>
+</body>
+</html>
