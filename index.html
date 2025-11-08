@@ -1,146 +1,148 @@
+<!-- Simpan ini sebagai HTML lengkap -->
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>OPEN PRE-ORDER MAKARONI XIIB2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="favicon-makaroni.png" type="image/png">
-  <style>
-    :root{
-      --bg1:#e7f9fd; --bg2:#d7f3fb; --card:#fff; --accent:#0d86a9; --muted:#546e73; --price:#026c91;
-    }
-    *{box-sizing:border-box;font-family:Poppins,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;}
-    body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#04303a;padding:18px;}
-    .wrap{max-width:1000px;margin:0 auto}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
-    h1{margin:0;color:var(--accent);font-size:22px}
-    .lead{color:var(--muted)}
-    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(6,29,37,0.06)}
-    .seg{display:flex;gap:8px}
-    .seg button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-    .seg .active{background:var(--accent);color:#fff}
-    .seg .inactive{background:#eef9fb;color:var(--accent)}
-    .layout{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:12px}
-    @media(max-width:980px){.layout{grid-template-columns:1fr}}
-    label{display:block;font-weight:600;margin-bottom:6px}
-    input[type="text"], input[type="number"], select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d7eef6;background:#fbfeff}
-    .variants{margin-top:8px}
-    .variant-row{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-bottom:1px dashed #eef7fa}
-    .small{font-size:13px;color:var(--muted)}
-    .qty{width:92px;padding:8px;border-radius:8px;border:1px solid #d7eef6;text-align:center}
-    .summary{padding:12px;border-radius:10px;background:linear-gradient(180deg,#f3fcff,#ffffff);border:1px solid #d8eef6}
-    .total{font-size:20px;font-weight:700;color:var(--price);margin-top:8px}
-    .btn{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700;width:100%}
-    .wa-btn{display:inline-flex;gap:8px;align-items:center;background:#25D366;color:white;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700}
-    .file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
-    .map iframe{width:100%;height:220px;border-radius:8px;border:0}
-    .note{font-size:13px;color:var(--muted);margin-top:6px}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OPEN PRE-ORDER MAKARONI XIIB2</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon-makaroni.png" type="image/png">
+<style>
+:root{
+  --bg1:#e7f9fd; --bg2:#d7f3fb; --card:#fff; --accent:#0d86a9; --muted:#546e73; --price:#026c91;
+}
+*{box-sizing:border-box;font-family:Poppins,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;}
+body{margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#04303a;padding:18px;}
+.wrap{max-width:1000px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{margin:0;color:var(--accent);font-size:22px}
+.lead{color:var(--muted)}
+.card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(6,29,37,0.06)}
+.seg{display:flex;gap:8px}
+.seg button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.seg .active{background:var(--accent);color:#fff}
+.seg .inactive{background:#eef9fb;color:var(--accent)}
+.layout{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:12px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+label{display:block;font-weight:600;margin-bottom:6px}
+input[type="text"], input[type="number"], select, textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d7eef6;background:#fbfeff}
+.variants{margin-top:8px}
+.variant-row{display:flex;justify-content:space-between;align-items:center;padding:10px 6px;border-bottom:1px dashed #eef7fa}
+.small{font-size:13px;color:var(--muted)}
+.qty{width:92px;padding:8px;border-radius:8px;border:1px solid #d7eef6;text-align:center}
+.summary{padding:12px;border-radius:10px;background:linear-gradient(180deg,#f3fcff,#ffffff);border:1px solid #d8eef6}
+.total{font-size:20px;font-weight:700;color:var(--price);margin-top:8px}
+.btn{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700;width:100%}
+.wa-btn{display:inline-flex;gap:8px;align-items:center;background:#25D366;color:white;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700}
+.file-input{padding:8px;border-radius:8px;border:1px dashed #cdeef8;background:#fbfeff}
+.map iframe{width:100%;height:220px;border-radius:8px;border:0}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div>
-      <h1>OPEN PRE-ORDER MAKARONI XIIB2</h1>
-      <div class="small lead">All packs 250 gr Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
-    </div>
-    <div style="text-align:right">
-      <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900 (Setelah pencet kirim, harap selalu kirim chat otomatis ke CP.</a>
-    </div>
-  </header>
+<header>
+<div>
+  <h1>OPEN PRE-ORDER MAKARONI XIIB2</h1>
+  <div class="small lead">All packs 250 gr Rp 15.000 — pilih tipe pesanan, varian, dan jumlah</div>
+</div>
+<div style="text-align:right">
+  <a class="wa-btn" id="waTop" href="#" target="_blank">Chat CP • 08813893900 (Setelah pencet kirim, harap selalu kirim chat otomatis ke CP.</a>
+</div>
+</header>
 
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <div class="seg" role="tablist" aria-label="Tipe Pesanan">
-        <button id="tabS" class="seg-btn active" data-type="Sedesian">Sedesian</button>
-        <button id="tabR" class="seg-btn inactive" data-type="Reguler">Reguler</button>
-      </div>
-      <div style="flex:1"></div>
-      <div class="small">Contact person: El XIIB2 • 08813893900</div>
-    </div>
-
-    <div class="layout" style="margin-top:12px">
-      <div>
-        <form id="mainForm" class="card">
-          <div id="fieldName">
-            <label>Nama Pemesan</label>
-            <input id="inputName" name="nama" type="text" placeholder="Nama Pemesan" required>
-
-            <div id="fieldB2" style="margin-top:10px">
-              <label>Nama Perantara Order (XIIB2)</label>
-              <input id="inputB2" name="b2" type="text" placeholder="Nama Anak/Siswa yang menawarkan">
-              <div class="note">Disii - jika tau info kami dari Sosial Media / Tidak ada yang menawarkan</div>
-            </div>
-
-            <div id="classRow" style="margin-top:10px">
-              <label>Kelas</label>
-              <input id="inputClass" name="kelas" type="text" placeholder="e.g. XIIB2">
-            </div>
-            <div id="addressRow" style="margin-top:10px;display:none">
-              <label>Alamat Lengkap</label>
-              <textarea id="inputAddress" name="alamat" rows="2" placeholder="Alamat untuk pengiriman (Kalau Pickup di Sedes diisi - saja)"></textarea>
-            </div>
-          </div>
-
-          <div style="margin-top:12px">
-            <label>Daftar Varian (Rp 15.000 / pack) — isi qty 0–10</label>
-            <div class="variants" id="variantsList"></div>
-            <div class="note">Max qty per variant: 10</div>
-          </div>
-
-          <div id="regulerOptions" style="margin-top:12px;display:none">
-            <label>Opsi Pengambilan</label>
-            <select id="pickupOption" name="pickupOption">
-              <option value="pickup">Pickup di SMA Sedes Sapientiae Semarang (12:00)</option>
-              <option value="delivery">Kirim ke alamat (harus isi alamat & hubungi CP)</option>
-            </select>
-          </div>
-
-          <div style="margin-top:12px">
-            <label>Metode Pembayaran</label>
-            <div id="paymentArea" class="small"></div>
-            <div id="cashOptions" style="margin-top:6px;display:none">
-              <label>Pilih opsi Cash</label>
-              <select id="cashPickup">
-                <option value="pickup">Langsung Menghubungi Melalui Perantara dari Anak XIIB2</option>
-                <option value="delivery">Membayar dengan Anak Sedes Langsung Menghubungi CP</option>
-              </select>
-            </div>
-
-            <div style="margin-top:12px">
-              <label>Catatan (opsional)</label>
-              <input id="notes" name="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
-            </div>
-          </div>
-
-          <div style="margin-top:12px;display:flex;gap:8px">
-            <button type="button" id="btnSubmit" class="btn">Kirim</button>
-          </div>
-        </form>
-      </div>
-
-      <aside>
-        <div class="summary card">
-          <div class="small">Ringkasan Pesanan</div>
-          <div id="orderSummary" class="small" style="margin-top:8px">Belum ada item dipilih</div>
-          <div class="total" id="orderTotal">Rp 0</div>
-
-          <div style="margin-top:8px" id="rekeningBox"></div>
-
-          <div style="margin-top:12px">
-            <button id="btnChat" class="btn" style="background:#25D366">Chat CP via WA</button>
-          </div>
-        </div>
-
-        <div style="margin-top:12px" class="card map">
-          <label>Lokasi Pickup</label>
-          <iframe src="https://www.google.com/maps?q=SMA+SEDES+SAPIENTIAE+SEMARANG&output=embed"></iframe>
-          <div class="note">Pickup default jam 12:00 — bisa dikonfirmasi dengan CP.</div>
-        </div>
-      </aside>
-    </div>
+<div class="card">
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <div class="seg" role="tablist" aria-label="Tipe Pesanan">
+    <button id="tabS" class="seg-btn active" data-type="Sedesian">Sedesian</button>
+    <button id="tabR" class="seg-btn inactive" data-type="Reguler">Reguler</button>
   </div>
+  <div style="flex:1"></div>
+  <div class="small">Contact person: El XIIB2 • 08813893900</div>
+</div>
+
+<div class="layout" style="margin-top:12px">
+  <!-- LEFT: FORM -->
+  <div>
+    <form id="mainForm" class="card">
+      <div id="fieldName">
+        <label>Nama Pemesan</label>
+        <input id="inputName" name="nama" type="text" placeholder="Nama Pemesan" required>
+
+        <div id="fieldB2" style="margin-top:10px">
+          <label>Nama Perantara Order (XIIB2)</label>
+          <input id="inputB2" name="b2" type="text" placeholder="Nama Anak/Siswa yang menawarkan">
+          <div class="note">Disii - jika tau info kami dari Sosial Media / Tidak ada yang menawarkan</div>
+        </div>
+
+        <div id="classRow" style="margin-top:10px">
+          <label>Kelas</label>
+          <input id="inputClass" name="kelas" type="text" placeholder="e.g. XIIB2">
+        </div>
+        <div id="addressRow" style="margin-top:10px;display:none">
+          <label>Alamat Lengkap</label>
+          <textarea id="inputAddress" name="alamat" rows="2" placeholder="Alamat untuk pengiriman (Kalau Pickup di Sedes diisi - saja)"></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <label>Daftar Varian (Rp 15.000 / pack) — isi qty 0–10</label>
+        <div class="variants" id="variantsList"></div>
+        <div class="note">Max qty per variant: 10</div>
+      </div>
+
+      <div id="regulerOptions" style="margin-top:12px;display:none">
+        <label>Opsi Pengambilan</label>
+        <select id="pickupOption" name="pickupOption">
+          <option value="pickup">Pickup di SMA Sedes Sapientiae Semarang (12:00)</option>
+          <option value="delivery">Kirim ke alamat (harus isi alamat & hubungi CP)</option>
+        </select>
+      </div>
+
+      <div style="margin-top:12px">
+        <label>Metode Pembayaran</label>
+        <div id="paymentArea" class="small"></div>
+        <div id="cashOptions" style="margin-top:6px;display:none">
+          <label>Pilih opsi Cash</label>
+          <select id="cashPickup">
+            <option value="pickup">Langsung Menghubungi Melalui Perantara dari Anak XIIB2</option>
+            <option value="delivery">Membayar dengan Anak Sedes Langsung Menghubungi CP</option>
+          </select>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Catatan (opsional)</label>
+          <input id="notes" name="notes" type="text" placeholder="Contoh: ambil lebih awal jika bisa" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="button" id="btnSubmit" class="btn">Kirim</button>
+      </div>
+    </form>
+  </div>
+
+  <aside>
+    <div class="summary card">
+      <div class="small">Ringkasan Pesanan</div>
+      <div id="orderSummary" class="small" style="margin-top:8px">Belum ada item dipilih</div>
+      <div class="total" id="orderTotal">Rp 0</div>
+
+      <div style="margin-top:8px" id="rekeningBox"></div>
+
+      <div style="margin-top:12px">
+        <button id="btnChat" class="btn" style="background:#25D366">Chat CP via WA</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px" class="card map">
+      <label>Lokasi Pickup</label>
+      <iframe src="https://www.google.com/maps?q=SMA+SEDES+SAPIENTIAE+SEMARANG&output=embed"></iframe>
+      <div class="note">Pickup default jam 12:00 — bisa dikonfirmasi dengan CP.</div>
+    </div>
+  </aside>
+</div>
+</div>
 </div>
 
 <script>
@@ -173,6 +175,7 @@ cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElemen
 
 let currentType='Sedesian';
 
+// --- TOAST NOTIFIKASI ---
 function showToast(msg, type='success', dur=3000){
   const t=document.createElement('div');
   t.textContent=msg;
@@ -225,6 +228,7 @@ function renderPaymentOptions(list){
       ${m==='Transfer'?'<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>':''}`;
     paymentArea.appendChild(wrap);
   });
+
   const acct=document.createElement('div');
   acct.className='small';acct.style.marginTop='8px';
   acct.innerHTML='<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
@@ -233,7 +237,8 @@ function renderPaymentOptions(list){
 
 document.addEventListener('change', e=>{
   if(e.target.name==='metode'){
-    cashOptions.style.display = e.target.value==='Cash' ? 'block' : 'none';
+    if(e.target.value==='Cash'){ cashOptions.style.display='block'; }
+    else{ cashOptions.style.display='none'; }
   }
 });
 
@@ -273,6 +278,7 @@ document.addEventListener('input', e=>{
 btnChat.onclick=()=>window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo kak!, saya mau tanya tentang pre-order makaroni.'),'_blank');
 waTop.href='https://wa.me/'+CP_WA_NUMBER+'?text='+encodeURIComponent('Halo kak!, saya ingin info pre-order makaroni.');
 
+// --- SUBMIT ---
 btnSubmit.onclick=()=>{
   const nama=document.getElementById('inputName').value.trim(),
         b2=document.getElementById('inputB2').value.trim(),
@@ -298,4 +304,39 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
-  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
+  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`; }
+
+  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
+
+  // kirim ke Apps Script background
+  const fd=new FormData();
+  fd.append('nama', nama);
+  fd.append('b2', b2);
+  fd.append('kelasAlamat', currentType==='Sedesian'?kelas:alamat);
+  fd.append('tipe', currentType);
+  fd.append('pesanan', orderLines.join('; '));
+  fd.append('total', total);
+  fd.append('metode', metode);
+  fd.append('notes', notes || '');
+  if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
+
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:fd})
+    .then(res=>{ showToast('Pesanan berhasil dikirim!','success'); return res.text(); })
+    .then(t=>console.log('Data terkirim',t))
+    .catch(err=>{ console.warn(err); showToast('Gagal mengirim pesanan','error'); });
+
+  // --- RESET FORM 2 DETIK ---
+  setTimeout(()=>{
+    document.getElementById('mainForm').reset();
+    cashOptions.style.display='none';
+    showType(currentType); // refresh tipe pesanan & payment
+    updateSummary();
+  }, 2000);
+};
+
+showType('Sedesian');
+updateSummary();
+</script>
+</body>
+</html>
