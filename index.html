@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>OPEN PRE-ORDER MAKARONI XIIB2</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="favicon-makaroni.png" type="image/png"> <!-- favicon -->
+  <link rel="icon" href="favicon-makaroni.png" type="image/png">
   <style>
     :root{
       --bg1:#e7f9fd; --bg2:#d7f3fb; --card:#fff; --accent:#0d86a9; --muted:#546e73; --price:#026c91;
@@ -61,7 +61,6 @@
     </div>
 
     <div class="layout" style="margin-top:12px">
-      <!-- LEFT: FORM -->
       <div>
         <form id="mainForm" class="card">
           <div id="fieldName">
@@ -174,7 +173,6 @@ cashOptions=document.getElementById('cashOptions'),cashPickup=document.getElemen
 
 let currentType='Sedesian';
 
-// --- TOAST NOTIFIKASI ---
 function showToast(msg, type='success', dur=3000){
   const t=document.createElement('div');
   t.textContent=msg;
@@ -227,19 +225,15 @@ function renderPaymentOptions(list){
       ${m==='Transfer'?'<div class="small" style="margin-left:22px;color:var(--price)">💳 Transfer ke:<br>• BCA 4090683361<br>• MANDIRI 1360036725569<br>a.n. <b>Mikael Kevin Kurnia</b></div>':''}`;
     paymentArea.appendChild(wrap);
   });
-
   const acct=document.createElement('div');
   acct.className='small';acct.style.marginTop='8px';
   acct.innerHTML='<b>Rekening:</b><br>• BCA 4090683361<br>• MANDIRI 1360036725569 a.n. Mikael Kevin Kurnia';
   rekeningBox.appendChild(acct);
 }
 
-// tampilkan opsi Cash
 document.addEventListener('change', e=>{
   if(e.target.name==='metode'){
-    if(e.target.value==='Cash'){
-      cashOptions.style.display='block';
-    }else{ cashOptions.style.display='none'; }
+    cashOptions.style.display = e.target.value==='Cash' ? 'block' : 'none';
   }
 });
 
@@ -304,41 +298,4 @@ btnSubmit.onclick=()=>{
   const totalRp=total.toLocaleString('id-ID');
 
   let waMsg=`[PESAN ${currentType.toUpperCase()}]%0A• Nama: ${nama}%0A• Nama Perantara: ${b2 || '-'}%0A• Tipe: ${currentType}%0A• Pesanan: ${orderLines.join(', ')}%0A• Total Qty: ${items.reduce((a,b)=>a+b.qty,0)} pack%0A• Total Harga: Rp ${totalRp}%0A• Metode: ${metode}%0A• Catatan: ${notes||'-'}`;
-  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan Perantara Anak Sedes XIIB2':'Sedesian langsung Menghubungi CP'}`;}
-  else{ waMsg+=`%0A\nSilahkan kirim bukti transfer ke CP secepatnya. Data kamu sudah tercatat. Terimakasih sudah order !`; }
-
-  window.open('https://wa.me/'+CP_WA_NUMBER+'?text='+waMsg,'_blank');
-
-  // kirim ke Apps Script background
-  const fd=new FormData();
-  fd.append('nama', nama);
-  fd.append('b2', b2);
-  fd.append('kelasAlamat', currentType==='Sedesian'?kelas:alamat);
-  fd.append('tipe', currentType);
-  fd.append('pesanan', orderLines.join('; '));
-  fd.append('total', total);
-  fd.append('metode', metode);
-  fd.append('notes', notes || '');
-  if(metode==='Cash'){ fd.append('cashOption', cashChoice); }
-
-  fetch(APPS_SCRIPT_URL,{method:'POST',body:fd})
-    .then(res=>{
-      showToast('Pesanan berhasil dikirim!','success');
-      return res.text();
-    })
-    .then(t=>console.log('Data terkirim',t))
-    .catch(err=>{
-      console.warn(err);
-      showToast('Gagal mengirim pesanan','error');
-    });
-
-  document.getElementById('mainForm').reset();
-  cashOptions.style.display='none';
-  updateSummary();
-};
-
-showType('Sedesian');
-updateSummary();
-</script>
-</body>
-</html>
+  if(metode==='Cash'){ waMsg+=`%0A• Opsi Cash: ${cashChoice==='pickup'?'Membayar Langsung dengan
